@@ -19,7 +19,7 @@
     "async": "0.2.10"
   },
   "devDependencies": {
-    "coffee-script": "1.6.3",
+    "coffee-script": "1.7.1",
     "mocha": "git://github.com/tandrewnichols/mocha.git#suppress-stack",
     "sandboxed-module": "0.3.0",
     "sinon": "1.7.3",
