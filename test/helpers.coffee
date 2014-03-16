@@ -10,6 +10,9 @@ _.mixin
   fix: (obj) ->
     JSON.parse(JSON.stringify(obj))
 
+_.mixin require('underscore.string')
+global._ = _
+
 global.spyObj = (fns...) ->
   _(fns).reduce (obj, fn) ->
     obj[fn] = sinon.stub()

@@ -1,7 +1,7 @@
 describe 'manifesto', ->
   Given -> @pedestrian =
     walk: sinon.stub()
-  Given -> @subject = sandbox 'lib/manifesto',
+  Given -> @subject = sandbox 'lib/file-manifest',
     underscore: _
     './pedestrian': @pedestrian
     'dir/foo/bar.js': 'foo/bar'
@@ -9,11 +9,11 @@ describe 'manifesto', ->
     'dir/some-long/nested/path.js': 'some-long/nested/path'
 
   context 'default reducer', ->
-    Given -> @pedestrian.walk.withArgs('dir', []).returns [
+    Given -> @pedestrian.walk.withArgs('dir').returns [
       'foo/bar.js', 'baz-quux.js', 'some-long/nested/path.js'
     ]
     When -> @result = @subject.generate('dir')
-    Then -> _.fix(@result).should.eql
+    Then -> expect(_.fix(@result)).to.deep.equal
       fooBar: 'foo/bar'
       bazQuux: 'baz-quux'
       someLongNestedPath: 'some-long/nested/path'
@@ -24,7 +24,7 @@ describe 'manifesto', ->
       memo[item] = item.split('').reverse().join('')
       return memo
     When -> @result = @subject.generate('dir', @reducer)
-    Then -> _.fix(@result).should.eql
+    Then -> expect(_.fix(@result)).to.deep.equal
       foo: 'oof'
       bar: 'rab'
       baz: 'zab'
