@@ -20,27 +20,29 @@ describe 'file-manifest', ->
         someLongNestedPath: 'some-long/nested/path'
       
     context 'custom reducer', ->
-      Given -> @pedestrian.walk.withArgs('dir').returns(['foo', 'bar', 'baz'])
+      Given -> @pedestrian.walk.withArgs('dir').returns ['foo', 'bar', 'baz']
       Given -> @reducer = (memo, item) ->
-        memo[item] = item.split('').reverse().join('')
+        memo[item] = item.split('').reverse().join ''
         return memo
-      When -> @result = @subject.generate('dir', @reducer)
+      When -> @result = @subject.generate 'dir', @reducer
       Then -> expect(_.fix(@result)).to.deep.equal
         foo: 'oof'
         bar: 'rab'
         baz: 'zab'
 
     context 'with patterns', ->
-      When -> @subject.generate('dir', ['pattern1', 'pattern2'])
-      Then -> @pedestrian.walk.calledWith('dir', ['pattern1', 'pattern2'])
+      When -> @subject.generate 'dir', ['pattern1', 'pattern2']
+      Then -> @pedestrian.walk.calledWith 'dir', ['pattern1', 'pattern2']
 
   context 'async', ->
-    Given -> @cb = sinon.spy()
+    Given -> @cb = sinon.stub()
+    Given -> @fn = (err, manifest) =>
+      @cb(err, manifest)
     context 'default reducer', ->
       Given -> @pedestrian.walk.withArgs('dir', []).callsArgWith 2, null, [
         'foo/bar.js', 'baz-quux.js', 'some-long/nested/path.js'
       ]
-      When -> @subject.generate('dir', { async: true }, @cb)
+      When -> @subject.generate 'dir', @fn
       Then -> expect(@cb).to.have.been.calledWith null,
         fooBar: 'foo/bar'
         bazQuux: 'baz-quux'
@@ -49,10 +51,15 @@ describe 'file-manifest', ->
     context 'custom reducer', ->
       Given -> @pedestrian.walk.withArgs('dir').callsArgWith 2, null, ['foo', 'bar', 'baz']
       Given -> @reducer = (memo, item, cb) ->
-        memo[item] = item.split('').reverse().join('')
+        memo[item] = item.split('').reverse().join ''
         cb null, memo
-      When -> @subject.generate('dir', { reduce: @reducer }, @cb)
+      When -> @subject.generate 'dir', @reducer, @fn
       Then -> expect(@cb).to.have.been.calledWith null,
         foo: 'oof'
         bar: 'rab'
         baz: 'zab'
+
+    context 'with patterns', ->
+      Given -> @reducer = sinon.spy()
+      When -> @subject.generate 'dir', ['pattern1', 'pattern2'], @reducer, @fn
+      Then -> @pedestrian.walk.calledWith 'dir', ['pattern1', 'pattern2'], sinon.match.func
