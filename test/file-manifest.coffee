@@ -30,6 +30,17 @@ describe 'file-manifest', ->
         bar: 'rab'
         baz: 'zab'
 
+    context 'custom reducer calling "this"', ->
+      Given -> @pedestrian.walk.withArgs('dir').returns ['foo', 'bar', 'baz']
+      Given -> @reducer = (memo, item) ->
+        memo[@dir + item] = item.split('').reverse().join ''
+        return memo
+      When -> @result = @subject.generate 'dir', @reducer
+      Then -> expect(_.fix(@result)).to.deep.equal
+        dirfoo: 'oof'
+        dirbar: 'rab'
+        dirbaz: 'zab'
+
     context 'with patterns', ->
       When -> @subject.generate 'dir', ['pattern1', 'pattern2']
       Then -> @pedestrian.walk.calledWith 'dir', ['pattern1', 'pattern2']
@@ -58,6 +69,17 @@ describe 'file-manifest', ->
         foo: 'oof'
         bar: 'rab'
         baz: 'zab'
+
+    context 'custom reducer calling "this"', ->
+      Given -> @pedestrian.walk.withArgs('dir').callsArgWith 2, null, ['foo', 'bar', 'baz']
+      Given -> @reducer = (memo, item, cb) ->
+        memo[@dir + item] = item.split('').reverse().join ''
+        cb null, memo
+      When -> @subject.generate 'dir', @reducer, @fn
+      Then -> expect(@cb).to.have.been.calledWith null,
+        dirfoo: 'oof'
+        dirbar: 'rab'
+        dirbaz: 'zab'
 
     context 'with patterns', ->
       Given -> @reducer = sinon.spy()
