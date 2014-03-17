@@ -1,6 +1,6 @@
 {
   "name": "file-manifest",
-  "description": "Coalesces all the exports from a directory into a single object",
+  "description": "Requires all the files in a directory into a camel-case-keyed object",
   "version": "0.0.1",
   "author": "Andrew Nichols <tandrewnichols@gmail.com>",
   "repository": {
