@@ -2,7 +2,7 @@
 
 # File-Manifest
 
-Requires all the files in a directory into a camel-case-keyed object
+Require all the files in a directory into a single object
 
 ## Installation
 
