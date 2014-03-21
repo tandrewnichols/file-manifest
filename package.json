@@ -1,7 +1,7 @@
 {
   "name": "file-manifest",
   "description": "Require all the files in a directory into a single object",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Andrew Nichols <tandrewnichols@gmail.com>",
   "repository": {
     "type": "git",
