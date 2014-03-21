@@ -3,7 +3,7 @@ describe 'file-manifest', ->
     walk: sinon.stub()
   Given -> @subject = sandbox 'lib/file-manifest',
     underscore: _
-    './pedestrian': @pedestrian
+    'pedestrian': @pedestrian
     'dir/foo/bar.js': 'foo/bar'
     'dir/baz-quux.js': 'baz-quux'
     'dir/some-long/nested/path.js': 'some-long/nested/path'
