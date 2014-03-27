@@ -1,5 +1,3 @@
-proxyquire = require 'proxyquire'
-
 describe 'file-manifest', ->
   Given -> @pedestrian =
     walk: sinon.stub()

@@ -2,6 +2,8 @@ _ = require('underscore')
 global.sinon = require('sinon')
 global.expect = require('indeed').expect
 
+global.proxyquire = require 'proxyquire'
+
 _.mixin require('underscore.string')
 global._ = _
 
