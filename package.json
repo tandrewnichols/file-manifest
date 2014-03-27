@@ -22,7 +22,7 @@
   "devDependencies": {
     "coffee-script": "1.7.1",
     "mocha": "git://github.com/tandrewnichols/mocha.git#suppress-stack",
-    "sandboxed-module": "0.3.0",
+    "proxyquire": "0.5.3",
     "sinon": "1.7.3",
     "mocha-given": "0.0.18",
     "indeed": "1.0.5"

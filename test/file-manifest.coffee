@@ -1,12 +1,14 @@
+proxyquire = require 'proxyquire'
+
 describe 'file-manifest', ->
   Given -> @pedestrian =
     walk: sinon.stub()
-  Given -> @subject = sandbox 'lib/file-manifest',
+  Given -> @subject = proxyquire '../lib/file-manifest',
     underscore: _
-    'pedestrian': @pedestrian
-    'dir/foo/bar.js': 'foo/bar'
-    'dir/baz-quux.js': 'baz-quux'
-    'dir/some-long/nested/path.js': 'some-long/nested/path'
+    pedestrian: @pedestrian
+    'dir/foo/bar.js': foo: 'foo/bar', '@noCallThru': true
+    'dir/baz-quux.js': bar: 'baz-quux', '@noCallThru': true
+    'dir/some-long/nested/path.js': nested: 'some-long/nested/path', '@noCallThru': true
 
   context 'sync', ->
     context 'default reducer', ->
@@ -14,10 +16,16 @@ describe 'file-manifest', ->
         'foo/bar.js', 'baz-quux.js', 'some-long/nested/path.js'
       ]
       When -> @result = @subject.generate('dir')
-      Then -> expect(_.fix(@result)).to.deep.equal
-        fooBar: 'foo/bar'
-        bazQuux: 'baz-quux'
-        someLongNestedPath: 'some-long/nested/path'
+      Then -> expect(@result).to.deep.equal
+        fooBar:
+          foo: 'foo/bar'
+          '@noCallThru': true
+        bazQuux:
+          bar: 'baz-quux'
+          '@noCallThru': true
+        someLongNestedPath:
+          nested: 'some-long/nested/path'
+          '@noCallThru': true
       
     context 'custom reducer', ->
       Given -> @pedestrian.walk.withArgs('dir').returns ['foo', 'bar', 'baz']
@@ -25,7 +33,7 @@ describe 'file-manifest', ->
         memo[item] = item.split('').reverse().join ''
         return memo
       When -> @result = @subject.generate 'dir', @reducer
-      Then -> expect(_.fix(@result)).to.deep.equal
+      Then -> expect(@result).to.deep.equal
         foo: 'oof'
         bar: 'rab'
         baz: 'zab'
@@ -36,7 +44,7 @@ describe 'file-manifest', ->
         memo[@dir + item] = item.split('').reverse().join ''
         return memo
       When -> @result = @subject.generate 'dir', @reducer
-      Then -> expect(_.fix(@result)).to.deep.equal
+      Then -> expect(@result).to.deep.equal
         dirfoo: 'oof'
         dirbar: 'rab'
         dirbaz: 'zab'
@@ -55,9 +63,15 @@ describe 'file-manifest', ->
       ]
       When -> @subject.generate 'dir', @fn
       Then -> expect(@cb).to.have.been.calledWith null,
-        fooBar: 'foo/bar'
-        bazQuux: 'baz-quux'
-        someLongNestedPath: 'some-long/nested/path'
+        fooBar:
+          foo: 'foo/bar'
+          '@noCallThru': true
+        bazQuux:
+          bar: 'baz-quux'
+          '@noCallThru': true
+        someLongNestedPath:
+          nested: 'some-long/nested/path'
+          '@noCallThru': true
 
     context 'custom reducer', ->
       Given -> @pedestrian.walk.withArgs('dir').callsArgWith 2, null, ['foo', 'bar', 'baz']
