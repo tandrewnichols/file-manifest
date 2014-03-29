@@ -32,7 +32,7 @@ You'd end up with an object that looked like this:
 This is useful (for example) in an express app to create a route manifest:
 
 ```javascript
-var routes = require('file-manifest').generate(path.resolve('routes'));
+var routes = require('file-manifest').generate('routes');
 
 app.get('/', routes.home);
 app.get('/users/:id', routes.profile);
@@ -42,7 +42,7 @@ app.get('/users/:id', routes.profile);
 or a middleware manifest:
 
 ```javascript
-var middleware = require('file-manifest').generate(path.resolve('middleware'));
+var middleware = require('file-manifest').generate('middleware');
 
 app.use(middleware.setOriginPolicy);
 app.use(middleware.defaultLogger);
@@ -52,7 +52,7 @@ app.use(middleware.defaultLogger);
 or in a mongoose app to load all models:
 
 ```javascript
-var models = require('file-manifest').generate(path.resolve('models'));
+var models = require('file-manifest').generate('models');
 module.exports = function(req, res, next) {
   req.models = models;
   next();
@@ -61,7 +61,7 @@ module.exports = function(req, res, next) {
 
 ### Sync
 
-Demonstrated above, just call `.generate` with a relative or absolute (recommended) path.
+Demonstrated above, just call `.generate` with a relative or absolute path. As of version 0.0.4, file-manifest will convert a relative path to absolute one for you.
 
 ```javascript
 var manifest = require('file-manifest').generate('some/dir');
@@ -103,6 +103,6 @@ var manifest = require('file-manifest').generate('partials', function(manifest, 
 });
 ```
 
-The sync implemenation uses `_.reduce` ([underscore](http://underscorejs.org/)), while the async version uses `async.reduce` ([async](https://github.com/caolan/async)), so see those for more information. Inside the reduce function, you do have access to `this.dir` and `this.patterns` (the original parameters passed in).
+The sync implemenation uses `_.reduce` ([underscore](http://underscorejs.org/)), while the async version uses `async.reduce` ([async](https://github.com/caolan/async)), so see those for more information. Inside the reduce function, you do have access to `this.dir`, which is the absolute version of the path passed in, and `this.patterns`, which is the original list of patterns.
 
-You might have noted that the same `generate` function can take a reduce function, a callback, or both. The way it distinguishes is by examining the last function to see if it's first parameter is `err`. That's why all async implementations should pass a callback that accepts a variable named `err`.
+You might have noted that the same `generate` function can take a reduce function, a callback, or both. The way `file-manifest` distinguishes is by examining the last function to see if it's first parameter is `err`. That's why all async implementations should pass a callback that accepts a variable named `err`.
