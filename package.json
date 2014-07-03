@@ -2,30 +2,40 @@
   "name": "file-manifest",
   "description": "Require all the files in a directory into a single object",
   "version": "0.0.4",
-  "author": "Andrew Nichols <tandrewnichols@gmail.com>",
+  "author": {
+    "name": "mantacode",
+    "email": "code@manta.com",
+    "url": "www.manta.com"
+  },
+  "contributors": [
+    {
+      "name": "Andrew Nichols",
+      "email": "tandrewnichols@gmail.com"
+    }
+  ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/tandrewnichols/file-manifest.git"
+    "url": "git://github.com/mantacode/file-manifest.git"
   },
-  "homepage": "https://github.com/tandrewnichols/file-manifest",
+  "homepage": "https://github.com/mantacode/file-manifest",
   "scripts": {
     "test": "mocha test",
     "watch": "mocha test -w -R min --suppress-stack"
   },
   "dependencies": {
-    "varity": "1.0.1",
-    "underscore": "1.5.2",
-    "underscore.string": "2.3.3",
-    "pedestrian": "0.0.2",
-    "async": "0.2.10"
+    "varity": "~1.0.1",
+    "underscore": "~1.6.0",
+    "underscore.string": "~2.3.3",
+    "pedestrian": "~0.0.3",
+    "async": "~0.2.10"
   },
   "devDependencies": {
-    "coffee-script": "1.7.1",
+    "coffee-script": "~1.7.1",
+    "mocha-given": "~0.0.18",
+    "indeed": "~1.0.6",
+    "proxyquire": "~1.0.1",
     "mocha": "git://github.com/tandrewnichols/mocha.git#suppress-stack",
-    "proxyquire": "0.5.3",
-    "sinon": "1.7.3",
-    "mocha-given": "0.0.18",
-    "indeed": "1.0.5"
+    "sinon": "~1.10.2"
   },
   "keywords": [
     "collect",
@@ -35,5 +45,8 @@
     "dir",
     "build"
   ],
-  "main": "./lib/file-manifest"
+  "main": "./lib/file-manifest",
+  "engines": {
+    "node": ">=0.8.0"
+  }
 }
