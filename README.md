@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/tandrewnichols/file-manifest.png)](https://travis-ci.org/tandrewnichols/file-manifest)
+[![Build Status](https://travis-ci.org/mantacode/file-manifest.png)](https://travis-ci.org/mantacode/file-manifest)
 
 # File-Manifest
 
