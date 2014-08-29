@@ -61,7 +61,7 @@
   "config": {
     "blanket": {
       "pattern": [
-        "pedestrian/lib"
+        "file-manifest/lib"
       ]
     }
   }
