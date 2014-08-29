@@ -19,23 +19,30 @@
   },
   "homepage": "https://github.com/mantacode/file-manifest",
   "scripts": {
-    "test": "mocha test",
-    "watch": "mocha test -w -R min --suppress-stack"
+    "test": "grunt",
+    "publish": "if echo $USERNAME | grep -cq 'anichols'; then publisher run; fi"
   },
   "dependencies": {
-    "varity": "~1.0.1",
-    "underscore": "~1.6.0",
-    "underscore.string": "~2.3.3",
-    "pedestrian": "~0.0.3",
-    "async": "~0.2.10"
+    "async": "^0.9.0",
+    "lodash": "^2.4.1",
+    "pedestrian": "0.0.6",
+    "underscore.string": "^2.3.3",
+    "varity": "^1.0.1"
   },
   "devDependencies": {
-    "coffee-script": "~1.7.1",
-    "mocha-given": "~0.0.18",
-    "indeed": "~1.0.6",
-    "proxyquire": "~1.0.1",
+    "coffee-script": "^1.8.0",
+    "grunt": "^0.4.5",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-mocha-cov": "^0.3.0",
+    "grunt-mocha-test": "^0.11.0",
+    "grunt-travis-matrix": "0.0.2",
+    "indeed": "^1.0.6",
+    "jshint-stylish": "^0.4.0",
     "mocha": "git://github.com/tandrewnichols/mocha.git#suppress-stack",
-    "sinon": "~1.10.2"
+    "mocha-given": "git://github.com/tandrewnichols/mocha-given.git",
+    "mocha-lcov-reporter": "0.0.1",
+    "proxyquire": "^1.0.1",
+    "sinon": "^1.10.3"
   },
   "keywords": [
     "collect",
@@ -43,10 +50,19 @@
     "require",
     "directory",
     "dir",
-    "build"
+    "build",
+    "manifest",
+    "all"
   ],
   "main": "./lib/file-manifest",
   "engines": {
     "node": ">=0.8.0"
+  },
+  "config": {
+    "blanket": {
+      "pattern": [
+        "pedestrian/lib"
+      ]
+    }
   }
 }

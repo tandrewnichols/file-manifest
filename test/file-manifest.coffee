@@ -3,8 +3,7 @@ describe 'file-manifest', ->
     walk: sinon.stub()
   Given -> @path = spyObj 'resolve'
   Given -> @path.resolve.withArgs('dir').returns '/dir'
-  Given -> @subject = proxyquire '../lib/file-manifest',
-    underscore: _
+  Given -> @subject = sandbox '../lib/file-manifest',
     path: @path
     pedestrian: @pedestrian
     '/dir/foo/bar.js': foo: 'foo/bar', '@noCallThru': true
@@ -58,12 +57,13 @@ describe 'file-manifest', ->
     Given -> @cb = sinon.stub()
     Given -> @fn = (err, manifest) =>
       @cb(err, manifest)
+
     context 'default reducer', ->
       Given -> @pedestrian.walk.withArgs('/dir', []).callsArgWith 2, null, [
         '/dir/foo/bar.js', '/dir/baz-quux.js', '/dir/some-long/nested/path.js'
       ]
       When -> @subject.generate 'dir', @fn
-      Then -> expect(@cb).to.have.been.calledWith null,
+      Then -> expect(@cb).to.have.been.calledWith undefined,
         fooBar:
           foo: 'foo/bar'
           '@noCallThru': true
@@ -80,7 +80,7 @@ describe 'file-manifest', ->
         memo[item] = item.split('').reverse().join ''
         cb null, memo
       When -> @subject.generate 'dir', @reducer, @fn
-      Then -> expect(@cb).to.have.been.calledWith null,
+      Then -> expect(@cb).to.have.been.calledWith undefined,
         foo: 'oof'
         bar: 'rab'
         baz: 'zab'
@@ -91,7 +91,7 @@ describe 'file-manifest', ->
         memo[item + @dir] = item.split('').reverse().join ''
         cb null, memo
       When -> @subject.generate 'dir', @reducer, @fn
-      Then -> expect(@cb).to.have.been.calledWith null,
+      Then -> expect(@cb).to.have.been.calledWith undefined,
         'foo/dir': 'oof'
         'bar/dir': 'rab'
         'baz/dir': 'zab'
@@ -99,4 +99,4 @@ describe 'file-manifest', ->
     context 'with patterns', ->
       Given -> @reducer = sinon.spy()
       When -> @subject.generate 'dir', ['pattern1', 'pattern2'], @reducer, @fn
-      Then -> @pedestrian.walk.calledWith '/dir', ['pattern1', 'pattern2'], sinon.match.func
+      Then -> expect(@pedestrian.walk).to.have.been.calledWith '/dir', ['pattern1', 'pattern2'], sinon.match.func
