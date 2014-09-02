@@ -1,11 +1,3 @@
-_ = require 'lodash'
-
-normalize = (manifest) ->
-  return _(manifest).keys().reduce( (memo, key) ->
-    memo[key.split('file-manifest/test/fixtures')[1]] = manfiest[key]
-    memo
-  , {})
-
 describe 'acceptance', ->
   Given -> @fm = require '../lib/file-manifest'
 
@@ -28,3 +20,12 @@ describe 'acceptance', ->
     Then -> expect(@manifest).to.deep.equal
       foo: 'foo'
       bar: 'bar'
+
+  describe 'with custom reducer', ->
+    When -> @manifest = @fm.generate "#{__dirname}/fixtures", (memo, file) ->
+      memo[require('path').basename(file, '.js')] = require(file).split('').reverse().join('')
+      return memo
+    Then -> expect(@manifest).to.deep.equal
+      foo: 'oof'
+      bar: 'rab'
+      quux: 'xuuq'

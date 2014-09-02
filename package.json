@@ -25,9 +25,9 @@
   "dependencies": {
     "async": "^0.9.0",
     "lodash": "^2.4.1",
-    "pedestrian": "0.0.6",
+    "pedestrian": "^0.0.6",
     "underscore.string": "^2.3.3",
-    "varity": "^1.0.1"
+    "varity": "^1.0.2"
   },
   "devDependencies": {
     "coffee-script": "^1.8.0",
@@ -35,7 +35,7 @@
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-mocha-cov": "^0.3.0",
     "grunt-mocha-test": "^0.11.0",
-    "grunt-travis-matrix": "0.0.2",
+    "grunt-travis-matrix": "^0.0.3",
     "indeed": "^1.0.6",
     "jshint-stylish": "^0.4.0",
     "mocha": "git://github.com/tandrewnichols/mocha.git#suppress-stack",
