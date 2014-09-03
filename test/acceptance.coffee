@@ -6,6 +6,13 @@ describe 'acceptance', ->
   Given -> @fm = require '../lib/file-manifest'
 
   describe 'sync', ->
+    describe 'with relative dir', ->
+      When -> @manifest = @fm.generate "./fixtures"
+      Then -> expect(@manifest).to.deep.equal
+        foo: 'foo'
+        bar: 'bar'
+        bazQuux: 'quux'
+
     describe 'with dir', ->
       When -> @manifest = @fm.generate "#{__dirname}/fixtures"
       Then -> expect(@manifest).to.deep.equal
@@ -172,6 +179,13 @@ describe 'acceptance', ->
         b: ['bar', 'foo', 'quux']
 
   describe 'async', ->
+    describe 'with a relative dir', ->
+      When (done) -> @fm.generate "./fixtures", (err, @manifest) => done()
+      Then -> expect(@manifest).to.deep.equal
+        foo: 'foo'
+        bar: 'bar'
+        bazQuux: 'quux'
+
     describe 'with dir', ->
       When (done) -> @fm.generate "#{__dirname}/fixtures", (err, @manifest) => done()
       Then -> expect(@manifest).to.deep.equal
