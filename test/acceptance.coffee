@@ -203,3 +203,138 @@ describe 'acceptance', ->
       Then -> expect(@manifest).to.deep.equal
         foo: 'oof'
         bar: 'rab'
+
+    describe 'with dir and options.patterns as array', ->
+      When (done) -> @fm.generate "#{__dirname}/fixtures", { patterns: ['*.js'] }, (err, @manifest) => done()
+      Then -> expect(@manifest).to.deep.equal
+        foo: 'foo'
+        bar: 'bar'
+
+    describe 'with dir and options.patterns as string', ->
+      When (done) -> @fm.generate "#{__dirname}/fixtures", { patterns: '*.js' }, (err, @manifest) => done()
+      Then -> expect(@manifest).to.deep.equal
+        foo: 'foo'
+        bar: 'bar'
+
+    describe 'with dir and options.memo', ->
+      When (done) -> @fm.generate "#{__dirname}/fixtures", { memo: { hello: 'world' } }, (err, @manifest) => done()
+      Then -> expect(@manifest).to.deep.equal
+        foo: 'foo'
+        bar: 'bar'
+        bazQuux: 'quux'
+        hello: 'world'
+
+    describe 'with dir and options.reducer', ->
+      When (done) -> @fm.generate "#{__dirname}/fixtures",
+        reducer: (options, manifest, file, cb) ->
+          manifest[file.name] = require(file.fullPath).split('').reverse().join('')
+          cb(null, manifest)
+      , (err, @manifest) => done()
+      Then -> expect(@manifest).to.deep.equal
+        foo: 'oof'
+        bar: 'rab'
+        quux: 'xuuq'
+
+    describe 'with dir and options.namer as function', ->
+      When (done) -> @fm.generate "#{__dirname}/fixtures",
+        namer: (options, file) -> file.name.split('').reverse().join('')
+      , (err, @manifest) => done()
+      Then -> expect(@manifest).to.deep.equal
+        oof: 'foo'
+        rab: 'bar'
+        xuuq: 'quux'
+
+    describe 'with dir and options.namer as string', ->
+      context 'camelCase', ->
+        When (done) -> @fm.generate "#{__dirname}/fixtures", { namer: 'camelCase' }, (err, @manifest) => done()
+        Then -> expect(@manifest).to.deep.equal
+          foo: 'foo'
+          bar: 'bar'
+          bazQuux: 'quux'
+
+      context 'dash', ->
+        When (done) -> @fm.generate "#{__dirname}/fixtures", { namer: 'dash' }, (err, @manifest) => done()
+        Then -> expect(@manifest).to.deep.equal
+          foo: 'foo'
+          bar: 'bar'
+          'baz-quux': 'quux'
+
+      context 'slash', ->
+        When (done) -> @fm.generate "#{__dirname}/fixtures", { namer: 'slash' }, (err, @manifest) => done()
+        Then -> expect(@manifest).to.deep.equal
+          foo: 'foo'
+          bar: 'bar'
+          'baz/quux': 'quux'
+
+      context 'class', ->
+        When (done) -> @fm.generate "#{__dirname}/fixtures", { namer: 'class' }, (err, @manifest) => done()
+        Then -> expect(@manifest).to.deep.equal
+          Foo: 'foo'
+          Bar: 'bar'
+          BazQuux: 'quux'
+
+      context 'lower', ->
+        When (done) -> @fm.generate "#{__dirname}/fixtures", { namer: 'lower' }, (err, @manifest) => done()
+        Then -> expect(@manifest).to.deep.equal
+          foo: 'foo'
+          bar: 'bar'
+          bazquux: 'quux'
+
+      context 'upper', ->
+        When (done) -> @fm.generate "#{__dirname}/fixtures", { namer: 'upper' }, (err, @manifest) => done()
+        Then -> expect(@manifest).to.deep.equal
+          FOO: 'foo'
+          BAR: 'bar'
+          BAZQUUX: 'quux'
+
+      context 'underscore', ->
+        When (done) -> @fm.generate "#{__dirname}/fixtures", { namer: 'underscore' }, (err, @manifest) => done()
+        Then -> expect(@manifest).to.deep.equal
+          foo: 'foo'
+          bar: 'bar'
+          baz_quux: 'quux'
+
+      context 'human', ->
+        When (done) -> @fm.generate "#{__dirname}/fixtures", { namer: 'human' }, (err, @manifest) => done()
+        Then -> expect(@manifest).to.deep.equal
+          Foo: 'foo'
+          Bar: 'bar'
+          'Baz quux': 'quux'
+
+    describe 'with dir and options.require as function', ->
+      When (done) -> @fm.generate "#{__dirname}/fixtures",
+        require: (options, file, cb) -> cb(null, path.extname(file))
+      , (err, @manifest) => done()
+      Then -> expect(@manifest).to.deep.equal
+        foo: '.js'
+        bar: '.js'
+        bazQuux: '.js'
+
+    describe 'with dir and options.require as string', ->
+      context 'require', ->
+        When (done) -> @fm.generate "#{__dirname}/fixtures", { require: 'require' }, (err, @manifest) => done()
+        Then -> expect(@manifest).to.deep.equal
+          foo: 'foo'
+          bar: 'bar'
+          bazQuux: 'quux'
+
+      context 'readfile', ->
+        When (done) -> @fm.generate "#{__dirname}/fixtures", { require: 'readFile' }, (err, @manifest) => done()
+        Then -> expect(@manifest).to.deep.equal
+          foo: 'module.exports = \'foo\';\n'
+          bar: 'module.exports = \'bar\';\n'
+          bazQuux: 'module.exports = \'quux\';\n'
+
+    describe 'with dir, options.memo, and reducer', ->
+      When (done) -> @fm.generate "#{__dirname}/fixtures",
+        memo:
+          a: []
+          b: []
+      , (options, manifest, file, cb) ->
+        manifest.b.push(file.name)
+        cb(null, manifest)
+      , (err, @manifest) => done()
+      And -> @manifest.b.sort()
+      Then -> expect(@manifest).to.deep.equal
+        a: []
+        b: ['bar', 'foo', 'quux']
