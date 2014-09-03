@@ -12,7 +12,7 @@ Require all the files in a directory into a single object
 
 ## Usage
 
-File-manifest recursively requires everything in a given directory (optionally filtered with globstar patterns) and packages it into a single object where the keys are camel-cased file names. Thus if you had a directory called `foo`, whose structure looked like this:
+File-manifest recursively requires everything in a given directory (optionally filtered with globstar patterns) and packages it into a single object where the keys are (by default) camel-cased file names. Thus if you had a directory called `foo`, whose structure looked like this:
 
 ```
 bar
@@ -63,7 +63,7 @@ module.exports = function(req, res, next) {
 
 ### Sync
 
-Demonstrated above, just call `.generate` with a relative or absolute path. As of version 0.0.4, file-manifest will convert a relative path to absolute one for you.
+As demonstrated above, just call `.generate` with a relative or absolute path.
 
 ```javascript
 var manifest = require('file-manifest').generate('some/dir');
@@ -71,7 +71,7 @@ var manifest = require('file-manifest').generate('some/dir');
 
 ### Async
 
-Just like sync, but accepts a callback. It is important that the first argument to this function be `err` (more on this below).
+Just like sync, but accepts a callback. It is important that the first argument to this function start with `err` (more on this below).
 
 ```javascript
 require('file-manifest').generate('some/dir', function(err, manifest) {
@@ -95,16 +95,92 @@ require('file-manifest').generate('config', ['**/*.json', '**/*.yml'], function(
 
 ### With a Custom Reduce
 
-File-manifest also gives you the option to provide a custom reduce function. This let's you alter the behavior of file-manifest if simply requiring the files is insufficient (or you don't like camel-cased key names). This reduce function should accept the current manifest, the file currently being processed, and (for async implementations) a callback. If you're using the sync version, manipulate the manifest and return it. Otherwise, manipulate it and call the callback with an optional error and the manifest.
+File-manifest also gives you the option to provide a custom reduce function. This let's you alter the behavior of file-manifest if simply requiring the files is insufficient (or you don't like camel-cased key names). This reduce function (as of v1.0.0) has the following signature - `(options, manifest, fileObj, [callback])` - where `options` is an object in the form:
 
 ```javascript
-var manifest = require('file-manifest').generate('partials', function(manifest, file) {
-  var name = file.split('.')[0].split('/').join('-');
-  manifest[name] = require(this.dir + '/' + file);
+patterns: Array or String // Any matching patterns provided (or empty string if none)
+dir: String // The directory to search
+memo: Any // The starting value for the reduce function (defaults to {})
+reducer: String or Function // The reduce function to call
+require: String or Function // The function to get the current file (defaults to the build in require function)
+namer: String or Function // The function to name the keys in the manifest
+```
+
+`manifest` is the results of the reduce process so far (often called "memo" for reasons that aren't really clear to me), `fileObj` is an object of file parts in the form:
+
+```javascript
+relativePath: String // The path of file minus the path original pass in (e.g. "foo/bar.js")
+relativeName: String // Like relativePath but without the extension. This is the part used for naming the keys (e.g. "foo/bar")
+fullPath: String // The full path of the file (e.g. "/dir/foo/bar")
+basename: String // The result of path.basename(fullPath) (e.g. "bar.js")
+name: String // Like basename but without the extension (e.g. "bar")
+ext: String // The file extension (e.g. ".js")
+```
+
+The callback will, of course, only be available in async implementations. You should manipulate the manifest and then return it (sync) or call the callback with an optional error and the new manifest (async).
+
+```javascript
+var manifest = require('file-manifest').generate('keywords', function(options, manifest, file) {
+  var name = file.relativeName.split('/').join('|');
+  manifest[name] = require(file.fullPath);
   return manifest;
 });
 ```
 
-The sync implemenation uses `_.reduce` ([underscore](http://underscorejs.org/)), while the async version uses `async.reduce` ([async](https://github.com/caolan/async)), so see those for more information. Inside the reduce function, you do have access to `this.dir`, which is the absolute version of the path passed in, and `this.patterns`, which is the original list of patterns.
+The sync implemenation uses `_.reduce` ([underscore](http://underscorejs.org/)), while the async version uses `async.reduce` ([async](https://github.com/caolan/async)), so see those for more information.
 
-You might have noted that the same `generate` function can take a reduce function, a callback, or both. The way `file-manifest` distinguishes is by examining the last function to see if it's first parameter is `err`. That's why all async implementations should pass a callback that accepts a variable named `err`.
+You might have noted that the same `generate` function can take a reduce function, a callback, or both. The way `file-manifest` distinguishes is by examining the last function to see if it's first parameter begins with `err`. That's why all async implementations should pass a callback that accepts a variable named `err` or `error`.
+
+If you are still using `file-manifest@<1.x`, the custom reduce function should accept only `manifest`, `file`, and (optionally) `callback`. The `file` is the absolute file path. The context of the function (i.e. `this`) does have properties called `dir`, which is the originally passed in path, and patterns, which is the original patterns. This just means you need to do some of the manipulation yourself. For example, the above function would be:
+
+```javascript
+var manifest = require('file-manifest').generate('keywords', function(manifest, file) {
+  var name = file.replace(this.dir + '/', '').replace(path.extname(file), '').split('/').join('|');
+  manifest[name] = require(file);
+  return manifest;
+});
+```
+
+### With options
+
+As of `file-manifest@1.0.0`, you can also pass an `options` object to file-manifest. The options object can have any of the keys defined above, except dir, which is still the first (and only required) argument. Note that `patterns` and `reducer` can be passed as part of the object OR as separate parameters. If you're passing an options object, you should just add them to that. The separate parameters were only included to preserve (the appearance of) backward compatibility (v1.0.0 is not _really_ backward compatible, but it takes a lot less to convert an old implementation with these parameters preserved).
+
+`memo` is the starting value for the reduce function. The default is `{}`, but it is sometimes useful to use `[]` or even something more complicated. Note, however, that the default reduce function expects an object, so if you want to do something different, you should supply a custom reducer. E.g.
+
+```javascript
+var manifest = require('file-manifest').generate('client/app/js', { memo: [], patterns: ['**/*.js'], reducer: function(options, manifest, file) {
+  manifest.push(file.name);
+  return manifest;
+}});
+```
+
+If you only want custom functionality for the way keys are generated or the way the file is read, you can also pass either (or both) of `namer` and `require`. The `namer` function should accept the options object and the same file object that `reduce` accepts and should return the key name. The `require` function should accept `options`, `fileObj`, and optionally `callback` and should return the corresponding value for the key (usually the exports or file contents) for sync implementations or call the callback with an optional error and the value for async implementations.
+
+```javascript
+var manifest = require('file-manifest').generate('partials', { namer: function(options, file) { return file.relativeName.split('/').join('-'); }, require: function(options, file, cb) {
+  fs.readFile(file.fullPath, 'utf8', cb);
+}});
+```
+
+Alternatively, since there are some common patterns, `namer` can be a string - one of `camelCase` (the default), `dash`, `slash`, `pipe`, `class`, `lower`, `upper`, `underscore` or `snake`, or `human`. The results for the file "foo/bar.js" for each would be:
+
+```
+camelCase: "fooBar",
+dash: "foo-bar",
+slash: "foo/bar",
+pipe: "foo|bar",
+class: "FooBar",
+lower: "foobar",
+upper: "FOOBAR",
+underscore: "foo_bar",
+snake: "foo_bar",
+human: "Foo bar"
+```
+
+Similarly, the `require` option can be a string with either `require` or `readFile`. `require` will use node's `require` function (this is the default, so there's not much point in specifying this). `readFile` will use `readFileSync` (for sync implementations) or `readFile` (for async implementations).
+
+So the previous call to `file-manifest` could be replaced with
+
+```javascript
+var manifest = require('file-manifest').genereate('partials', { namer: 'dash', require: 'readFile' });
+```

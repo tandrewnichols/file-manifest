@@ -109,6 +109,13 @@ describe 'acceptance', ->
           bar: 'bar'
           'baz/quux': 'quux'
 
+      context 'pipe', ->
+        When -> @manifest = @fm.generate "#{__dirname}/fixtures", { namer: 'pipe' }
+        Then -> expect(@manifest).to.deep.equal
+          foo: 'foo'
+          bar: 'bar'
+          'baz|quux': 'quux'
+
       context 'class', ->
         When -> @manifest = @fm.generate "#{__dirname}/fixtures", { namer: 'class' }
         Then -> expect(@manifest).to.deep.equal
@@ -279,6 +286,13 @@ describe 'acceptance', ->
           foo: 'foo'
           bar: 'bar'
           'baz/quux': 'quux'
+
+      context 'pipe', ->
+        When (done) -> @fm.generate "#{__dirname}/fixtures", { namer: 'pipe' }, (err, @manifest) => done()
+        Then -> expect(@manifest).to.deep.equal
+          foo: 'foo'
+          bar: 'bar'
+          'baz|quux': 'quux'
 
       context 'class', ->
         When (done) -> @fm.generate "#{__dirname}/fixtures", { namer: 'class' }, (err, @manifest) => done()
