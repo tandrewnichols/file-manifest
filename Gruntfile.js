@@ -25,7 +25,7 @@ module.exports = function(grunt) {
           require: 'coffee-script/register',
           output: 'coverage/coverage.lcov'
         },
-        src: ['test/acceptance.coffee'],
+        src: ['test/**/*.coffee'],
       },
       html: {
         options: {
@@ -34,7 +34,7 @@ module.exports = function(grunt) {
           require: 'coffee-script/register',
           output: 'coverage/coverage.html'
         },
-        src: ['test/acceptance.coffee']
+        src: ['test/**/*.coffee']
       }
     },
     mochaTest: {
@@ -44,7 +44,7 @@ module.exports = function(grunt) {
         require: 'coffee-script/register'
       },
       test: {
-        src: ['test/acceptance.coffee']
+        src: ['test/**/*.coffee']
       }
     },
     travis: {
