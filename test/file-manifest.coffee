@@ -153,7 +153,7 @@ describe 'acceptance', ->
 
     describe 'with dir and options.require as function', ->
       When -> @manifest = @fm.generate "#{__dirname}/fixtures",
-        require: (options, file) -> path.extname(file)
+        require: (options, file) -> file.ext
       Then -> expect(@manifest).to.deep.equal
         foo: '.js'
         bar: '.js'
@@ -331,7 +331,7 @@ describe 'acceptance', ->
 
     describe 'with dir and options.require as function', ->
       When (done) -> @fm.generate "#{__dirname}/fixtures",
-        require: (options, file, cb) -> cb(null, path.extname(file))
+        require: (options, file, cb) -> cb(null, file.ext)
       , (err, @manifest) => done()
       Then -> expect(@manifest).to.deep.equal
         foo: '.js'
