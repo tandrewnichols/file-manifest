@@ -192,7 +192,7 @@ Similarly, the `require` option can be a string with either `require` or `readFi
 So the previous call to `file-manifest` could be replaced with
 
 ```javascript
-var manifest = require('file-manifest').genereate('partials', { namer: 'dash', require: 'readFile' });
+var manifest = require('file-manifest').generate('partials', { namer: 'dash', require: 'readFile' });
 ```
 <br><br><br>
 *Note: This _probably_ goes without saying, but "an optional error" (throughout) means that it may be `null` or `undefined`, not that it may be omitted.
