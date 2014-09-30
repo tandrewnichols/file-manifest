@@ -1,7 +1,7 @@
 {
   "name": "file-manifest",
   "description": "Require all the files in a directory into a single object",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": {
     "name": "mantacode",
     "email": "code@manta.com",
