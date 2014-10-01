@@ -12,6 +12,7 @@ describe 'acceptance', ->
         foo: 'foo'
         bar: 'bar'
         bazQuux: 'quux'
+        blah: 'json'
 
     describe 'with dir', ->
       When -> @manifest = @fm.generate "#{__dirname}/fixtures"
@@ -19,12 +20,20 @@ describe 'acceptance', ->
         foo: 'foo'
         bar: 'bar'
         bazQuux: 'quux'
+        blah: 'json'
 
     describe 'with dir and patterns as array', ->
       When -> @manifest = @fm.generate "#{__dirname}/fixtures", ['*.js']
       Then -> expect(@manifest).to.deep.equal
         foo: 'foo'
         bar: 'bar'
+
+    describe 'with multiple patterns', ->
+      When -> @manifest = @fm.generate "#{__dirname}/fixtures", ['**/*.js', '*.json', '!foo*']
+      Then -> expect(@manifest).to.deep.equal
+        bar: 'bar'
+        blah: 'json'
+        bazQuux: 'quux'
 
     describe 'with dir and patterns as string', ->
       When -> @manifest = @fm.generate "#{__dirname}/fixtures", '*.js'
@@ -40,6 +49,7 @@ describe 'acceptance', ->
         foo: 'oof'
         bar: 'rab'
         quux: 'xuuq'
+        blah: 'nosj'
 
     describe 'with dir, patterns, and reducer', ->
       When -> @manifest = @fm.generate "#{__dirname}/fixtures", ['*.js'], (options, manifest, file) ->
@@ -67,6 +77,7 @@ describe 'acceptance', ->
         foo: 'foo'
         bar: 'bar'
         bazQuux: 'quux'
+        blah: 'json'
         hello: 'world'
 
     describe 'with dir and options.reducer', ->
@@ -78,6 +89,7 @@ describe 'acceptance', ->
         foo: 'oof'
         bar: 'rab'
         quux: 'xuuq'
+        blah: 'nosj'
 
     describe 'with dir and options.namer as function', ->
       When -> @manifest = @fm.generate "#{__dirname}/fixtures",
@@ -86,6 +98,7 @@ describe 'acceptance', ->
         oof: 'foo'
         rab: 'bar'
         xuuq: 'quux'
+        halb: 'json'
 
     describe 'with dir and options.namer as string', ->
       context 'camelCase', ->
@@ -93,6 +106,7 @@ describe 'acceptance', ->
         Then -> expect(@manifest).to.deep.equal
           foo: 'foo'
           bar: 'bar'
+          blah: 'json'
           bazQuux: 'quux'
 
       context 'dash', ->
@@ -100,6 +114,7 @@ describe 'acceptance', ->
         Then -> expect(@manifest).to.deep.equal
           foo: 'foo'
           bar: 'bar'
+          blah: 'json'
           'baz-quux': 'quux'
 
       context 'slash', ->
@@ -107,6 +122,7 @@ describe 'acceptance', ->
         Then -> expect(@manifest).to.deep.equal
           foo: 'foo'
           bar: 'bar'
+          blah: 'json'
           'baz/quux': 'quux'
 
       context 'pipe', ->
@@ -114,6 +130,7 @@ describe 'acceptance', ->
         Then -> expect(@manifest).to.deep.equal
           foo: 'foo'
           bar: 'bar'
+          blah: 'json'
           'baz|quux': 'quux'
 
       context 'class', ->
@@ -121,6 +138,7 @@ describe 'acceptance', ->
         Then -> expect(@manifest).to.deep.equal
           Foo: 'foo'
           Bar: 'bar'
+          Blah: 'json'
           BazQuux: 'quux'
 
       context 'lower', ->
@@ -128,6 +146,7 @@ describe 'acceptance', ->
         Then -> expect(@manifest).to.deep.equal
           foo: 'foo'
           bar: 'bar'
+          blah: 'json'
           bazquux: 'quux'
 
       context 'upper', ->
@@ -135,6 +154,7 @@ describe 'acceptance', ->
         Then -> expect(@manifest).to.deep.equal
           FOO: 'foo'
           BAR: 'bar'
+          BLAH: 'json'
           BAZQUUX: 'quux'
 
       context 'underscore', ->
@@ -142,6 +162,7 @@ describe 'acceptance', ->
         Then -> expect(@manifest).to.deep.equal
           foo: 'foo'
           bar: 'bar'
+          blah: 'json'
           baz_quux: 'quux'
 
       context 'human', ->
@@ -149,6 +170,7 @@ describe 'acceptance', ->
         Then -> expect(@manifest).to.deep.equal
           Foo: 'foo'
           Bar: 'bar'
+          Blah: 'json'
           'Baz quux': 'quux'
 
     describe 'with dir and options.require as function', ->
@@ -157,6 +179,7 @@ describe 'acceptance', ->
       Then -> expect(@manifest).to.deep.equal
         foo: '.js'
         bar: '.js'
+        blah: '.json'
         bazQuux: '.js'
 
     describe 'with dir and options.require as string', ->
@@ -165,6 +188,7 @@ describe 'acceptance', ->
         Then -> expect(@manifest).to.deep.equal
           foo: 'foo'
           bar: 'bar'
+          blah: 'json'
           bazQuux: 'quux'
 
       context 'readfile', ->
@@ -172,6 +196,7 @@ describe 'acceptance', ->
         Then -> expect(@manifest).to.deep.equal
           foo: 'module.exports = \'foo\';\n'
           bar: 'module.exports = \'bar\';\n'
+          blah: '"json"\n'
           bazQuux: 'module.exports = \'quux\';\n'
 
     describe 'with dir, options.memo, and reducer', ->
@@ -183,7 +208,7 @@ describe 'acceptance', ->
       And -> @manifest.b.sort()
       Then -> expect(@manifest).to.deep.equal
         a: []
-        b: ['bar', 'foo', 'quux']
+        b: ['bar', 'blah', 'foo', 'quux']
 
   describe 'async', ->
     describe 'with a relative dir', ->
@@ -191,6 +216,7 @@ describe 'acceptance', ->
       Then -> expect(@manifest).to.deep.equal
         foo: 'foo'
         bar: 'bar'
+        blah: 'json'
         bazQuux: 'quux'
 
     describe 'with dir', ->
@@ -198,6 +224,7 @@ describe 'acceptance', ->
       Then -> expect(@manifest).to.deep.equal
         foo: 'foo'
         bar: 'bar'
+        blah: 'json'
         bazQuux: 'quux'
 
     describe 'with dir and patterns', ->
@@ -215,6 +242,7 @@ describe 'acceptance', ->
         foo: 'oof'
         bar: 'rab'
         quux: 'xuuq'
+        blah: 'nosj'
 
     describe 'with dir, patterns, and reducer', ->
       When (done) -> @fm.generate "#{__dirname}/fixtures", ['*.js'], ((options, manifest, file, cb) ->
@@ -242,6 +270,7 @@ describe 'acceptance', ->
       Then -> expect(@manifest).to.deep.equal
         foo: 'foo'
         bar: 'bar'
+        blah: 'json'
         bazQuux: 'quux'
         hello: 'world'
 
@@ -254,6 +283,7 @@ describe 'acceptance', ->
       Then -> expect(@manifest).to.deep.equal
         foo: 'oof'
         bar: 'rab'
+        blah: 'nosj'
         quux: 'xuuq'
 
     describe 'with dir and options.namer as function', ->
@@ -263,6 +293,7 @@ describe 'acceptance', ->
       Then -> expect(@manifest).to.deep.equal
         oof: 'foo'
         rab: 'bar'
+        halb: 'json'
         xuuq: 'quux'
 
     describe 'with dir and options.namer as string', ->
@@ -271,6 +302,7 @@ describe 'acceptance', ->
         Then -> expect(@manifest).to.deep.equal
           foo: 'foo'
           bar: 'bar'
+          blah: 'json'
           bazQuux: 'quux'
 
       context 'dash', ->
@@ -278,6 +310,7 @@ describe 'acceptance', ->
         Then -> expect(@manifest).to.deep.equal
           foo: 'foo'
           bar: 'bar'
+          blah: 'json'
           'baz-quux': 'quux'
 
       context 'slash', ->
@@ -285,6 +318,7 @@ describe 'acceptance', ->
         Then -> expect(@manifest).to.deep.equal
           foo: 'foo'
           bar: 'bar'
+          blah: 'json'
           'baz/quux': 'quux'
 
       context 'pipe', ->
@@ -292,6 +326,7 @@ describe 'acceptance', ->
         Then -> expect(@manifest).to.deep.equal
           foo: 'foo'
           bar: 'bar'
+          blah: 'json'
           'baz|quux': 'quux'
 
       context 'class', ->
@@ -299,6 +334,7 @@ describe 'acceptance', ->
         Then -> expect(@manifest).to.deep.equal
           Foo: 'foo'
           Bar: 'bar'
+          Blah: 'json'
           BazQuux: 'quux'
 
       context 'lower', ->
@@ -306,6 +342,7 @@ describe 'acceptance', ->
         Then -> expect(@manifest).to.deep.equal
           foo: 'foo'
           bar: 'bar'
+          blah: 'json'
           bazquux: 'quux'
 
       context 'upper', ->
@@ -313,6 +350,7 @@ describe 'acceptance', ->
         Then -> expect(@manifest).to.deep.equal
           FOO: 'foo'
           BAR: 'bar'
+          BLAH: 'json'
           BAZQUUX: 'quux'
 
       context 'underscore', ->
@@ -320,6 +358,7 @@ describe 'acceptance', ->
         Then -> expect(@manifest).to.deep.equal
           foo: 'foo'
           bar: 'bar'
+          blah: 'json'
           baz_quux: 'quux'
 
       context 'human', ->
@@ -327,6 +366,7 @@ describe 'acceptance', ->
         Then -> expect(@manifest).to.deep.equal
           Foo: 'foo'
           Bar: 'bar'
+          Blah: 'json'
           'Baz quux': 'quux'
 
     describe 'with dir and options.require as function', ->
@@ -336,6 +376,7 @@ describe 'acceptance', ->
       Then -> expect(@manifest).to.deep.equal
         foo: '.js'
         bar: '.js'
+        blah: '.json'
         bazQuux: '.js'
 
     describe 'with dir and options.require as string', ->
@@ -344,6 +385,7 @@ describe 'acceptance', ->
         Then -> expect(@manifest).to.deep.equal
           foo: 'foo'
           bar: 'bar'
+          blah: 'json'
           bazQuux: 'quux'
 
       context 'readfile', ->
@@ -351,6 +393,7 @@ describe 'acceptance', ->
         Then -> expect(@manifest).to.deep.equal
           foo: 'module.exports = \'foo\';\n'
           bar: 'module.exports = \'bar\';\n'
+          blah: '"json"\n'
           bazQuux: 'module.exports = \'quux\';\n'
 
     describe 'with dir, options.memo, and reducer', ->
@@ -365,4 +408,4 @@ describe 'acceptance', ->
       And -> @manifest.b.sort()
       Then -> expect(@manifest).to.deep.equal
         a: []
-        b: ['bar', 'foo', 'quux']
+        b: ['bar', 'blah', 'foo', 'quux']
