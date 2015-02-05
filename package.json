@@ -19,8 +19,7 @@
   },
   "homepage": "https://github.com/mantacode/file-manifest",
   "scripts": {
-    "test": "grunt",
-    "publish": "if echo $USERNAME | grep -cq 'anichols'; then publisher run; fi"
+    "test": "grunt"
   },
   "dependencies": {
     "async": "^0.9.0",
