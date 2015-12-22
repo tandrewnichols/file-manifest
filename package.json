@@ -46,7 +46,7 @@
     "mocha": "git://github.com/tandrewnichols/mocha.git#suppress-stack",
     "mocha-given": "git://github.com/tandrewnichols/mocha-given.git",
     "mocha-lcov-reporter": "0.0.1",
-    "proxyquire": "^1.0.1",
+    "proxyquire": "^1.7.3",
     "rimraf": "^2.4.4",
     "should": "^8.0.2",
     "should-sinon": "0.0.3",
