@@ -1,7 +1,7 @@
 sinon = require('sinon')
 path = require('path')
 
-describe 'acceptance', ->
+describe 'integration', ->
   Given -> @fm = require '../../lib/file-manifest'
 
   describe 'sync', ->
