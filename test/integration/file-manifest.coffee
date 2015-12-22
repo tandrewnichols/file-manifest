@@ -350,3 +350,351 @@ describe 'acceptance', ->
       Then -> @manifest.should.eql
         a: []
         b: ['bar', 'blah', 'foo', 'quux']
+
+  describe 'promise', ->
+    describe 'with a relative dir', ->
+      When (done) -> @fm.generatePromise("./fixtures").then (@manifest) => done()
+      Then -> @manifest.should.eql
+        foo: 'foo'
+        bar: 'bar'
+        blah: 'json'
+        bazQuux: 'quux'
+
+    describe 'with dir', ->
+      When (done) -> @fm.generatePromise("#{__dirname}/fixtures").then (@manifest) => done()
+      Then -> @manifest.should.eql
+        foo: 'foo'
+        bar: 'bar'
+        blah: 'json'
+        bazQuux: 'quux'
+
+    describe 'with dir and options.match', ->
+      When (done) -> @fm.generatePromise("#{__dirname}/fixtures", match: ['*.js']).then (@manifest) => done()
+      Then -> @manifest.should.eql
+        foo: 'foo'
+        bar: 'bar'
+
+    describe 'with dir and options.reduce', ->
+      When (done) -> @fm.generatePromise("#{__dirname}/fixtures", reduce: (manifest, file, cb) ->
+        manifest[file.name()] = require(file.abs()).split('').reverse().join('')
+        cb(null, manifest)
+      ).then (@manifest) => done()
+      Then -> @manifest.should.eql
+        foo: 'oof'
+        bar: 'rab'
+        quux: 'xuuq'
+        blah: 'nosj'
+
+    describe 'with dir, options.match, and options.reduce', ->
+      When (done) -> @fm.generatePromise("#{__dirname}/fixtures", { match: ['*.js'], reduce: (manifest, file, cb) ->
+        manifest[file.name()] = require(file.abs()).split('').reverse().join('')
+        cb(null, manifest)
+      }).then (@manifest) => done()
+      Then -> @manifest.should.eql
+        foo: 'oof'
+        bar: 'rab'
+
+    describe 'with dir and options.match as string', ->
+      When (done) -> @fm.generatePromise("#{__dirname}/fixtures", { match: '*.js' }).then (@manifest) => done()
+      Then -> @manifest.should.eql
+        foo: 'foo'
+        bar: 'bar'
+
+    describe 'with dir and options.memo', ->
+      When (done) -> @fm.generatePromise("#{__dirname}/fixtures", { memo: { hello: 'world' } }).then (@manifest) => done()
+      Then -> @manifest.should.eql
+        foo: 'foo'
+        bar: 'bar'
+        blah: 'json'
+        bazQuux: 'quux'
+        hello: 'world'
+
+    describe 'with dir and options.name as function', ->
+      When (done) -> @fm.generatePromise("#{__dirname}/fixtures",
+        name: (file) -> file.name().split('').reverse().join('')
+      ).then (@manifest) => done()
+      Then -> @manifest.should.eql
+        oof: 'foo'
+        rab: 'bar'
+        halb: 'json'
+        xuuq: 'quux'
+
+    describe 'with dir and options.name as string', ->
+      context 'camelCase', ->
+        When (done) -> @fm.generatePromise("#{__dirname}/fixtures", { name: 'camelCase' }).then (@manifest) => done()
+        Then -> @manifest.should.eql
+          foo: 'foo'
+          bar: 'bar'
+          blah: 'json'
+          bazQuux: 'quux'
+
+      context 'dash', ->
+        When (done) -> @fm.generatePromise("#{__dirname}/fixtures", { name: 'dash' }).then (@manifest) => done()
+        Then -> @manifest.should.eql
+          foo: 'foo'
+          bar: 'bar'
+          blah: 'json'
+          'baz-quux': 'quux'
+
+      context 'pipe', ->
+        When (done) -> @fm.generatePromise("#{__dirname}/fixtures", { name: 'pipe' }).then (@manifest) => done()
+        Then -> @manifest.should.eql
+          foo: 'foo'
+          bar: 'bar'
+          blah: 'json'
+          'baz|quux': 'quux'
+
+      context 'class', ->
+        When (done) -> @fm.generatePromise( "#{__dirname}/fixtures", { name: 'class' }).then (@manifest) => done()
+        Then -> @manifest.should.eql
+          Foo: 'foo'
+          Bar: 'bar'
+          Blah: 'json'
+          BazQuux: 'quux'
+
+      context 'lower', ->
+        When (done) -> @fm.generatePromise("#{__dirname}/fixtures", { name: 'lower' }).then (@manifest) => done()
+        Then -> @manifest.should.eql
+          foo: 'foo'
+          bar: 'bar'
+          blah: 'json'
+          bazquux: 'quux'
+
+      context 'upper', ->
+        When (done) -> @fm.generatePromise("#{__dirname}/fixtures", { name: 'upper' }).then (@manifest) => done()
+        Then -> @manifest.should.eql
+          FOO: 'foo'
+          BAR: 'bar'
+          BLAH: 'json'
+          BAZQUUX: 'quux'
+
+      context 'underscore', ->
+        When (done) -> @fm.generatePromise("#{__dirname}/fixtures", { name: 'underscore' }).then (@manifest) => done()
+        Then -> @manifest.should.eql
+          foo: 'foo'
+          bar: 'bar'
+          blah: 'json'
+          baz_quux: 'quux'
+
+      context 'human', ->
+        When (done) -> @fm.generatePromise("#{__dirname}/fixtures", { name: 'human' }).then (@manifest) => done()
+        Then -> @manifest.should.eql
+          Foo: 'foo'
+          Bar: 'bar'
+          Blah: 'json'
+          'Baz quux': 'quux'
+
+    describe 'with dir and options.load as function', ->
+      When (done) -> @fm.generatePromise("#{__dirname}/fixtures",
+        load: (file, cb) -> cb(null, file.ext())
+      ).then (@manifest) => done()
+      Then -> @manifest.should.eql
+        foo: '.js'
+        bar: '.js'
+        blah: '.json'
+        bazQuux: '.js'
+
+    describe 'with dir and options.load as string', ->
+      context 'require', ->
+        When (done) -> @fm.generatePromise("#{__dirname}/fixtures", { load: 'require' }).then (@manifest) => done()
+        Then -> @manifest.should.eql
+          foo: 'foo'
+          bar: 'bar'
+          blah: 'json'
+          bazQuux: 'quux'
+
+      context 'readfile', ->
+        When (done) -> @fm.generatePromise("#{__dirname}/fixtures", { load: 'readFile' }).then (@manifest) => done()
+        Then -> @manifest.should.eql
+          foo: 'module.exports = \'foo\';\n'
+          bar: 'module.exports = \'bar\';\n'
+          blah: '"json"\n'
+          bazQuux: 'module.exports = \'quux\';\n'
+
+    describe 'with dir, options.memo, and options.reduce', ->
+      When (done) -> @fm.generatePromise("#{__dirname}/fixtures",
+        memo:
+          a: []
+          b: []
+        reduce: (manifest, file, cb) ->
+          manifest.b.push(file.name())
+          cb(null, manifest)
+      ).then (@manifest) => done()
+      And -> @manifest.b.sort()
+      Then -> @manifest.should.eql
+        a: []
+        b: ['bar', 'blah', 'foo', 'quux']
+
+  describe 'promise', ->
+    describe 'with a relative dir', ->
+      When (done) -> @fm.generateEvent("./fixtures").on 'manifest', (@manifest) => done()
+      Then -> @manifest.should.eql
+        foo: 'foo'
+        bar: 'bar'
+        blah: 'json'
+        bazQuux: 'quux'
+
+    describe 'with dir', ->
+      When (done) -> @fm.generateEvent("#{__dirname}/fixtures").on 'manifest', (@manifest) => done()
+      Then -> @manifest.should.eql
+        foo: 'foo'
+        bar: 'bar'
+        blah: 'json'
+        bazQuux: 'quux'
+
+    describe 'with dir and options.match', ->
+      When (done) -> @fm.generateEvent("#{__dirname}/fixtures", match: ['*.js']).on 'manifest', (@manifest) => done()
+      Then -> @manifest.should.eql
+        foo: 'foo'
+        bar: 'bar'
+
+    describe 'with dir and options.reduce', ->
+      When (done) -> @fm.generateEvent("#{__dirname}/fixtures", reduce: (manifest, file, cb) ->
+        manifest[file.name()] = require(file.abs()).split('').reverse().join('')
+        cb(null, manifest)
+      ).on 'manifest', (@manifest) => done()
+      Then -> @manifest.should.eql
+        foo: 'oof'
+        bar: 'rab'
+        quux: 'xuuq'
+        blah: 'nosj'
+
+    describe 'with dir, options.match, and options.reduce', ->
+      When (done) -> @fm.generateEvent("#{__dirname}/fixtures", { match: ['*.js'], reduce: (manifest, file, cb) ->
+        manifest[file.name()] = require(file.abs()).split('').reverse().join('')
+        cb(null, manifest)
+      }).on 'manifest', (@manifest) => done()
+      Then -> @manifest.should.eql
+        foo: 'oof'
+        bar: 'rab'
+
+    describe 'with dir and options.match as string', ->
+      When (done) -> @fm.generateEvent("#{__dirname}/fixtures", { match: '*.js' }).on 'manifest', (@manifest) => done()
+      Then -> @manifest.should.eql
+        foo: 'foo'
+        bar: 'bar'
+
+    describe 'with dir and options.memo', ->
+      When (done) -> @fm.generateEvent("#{__dirname}/fixtures", { memo: { hello: 'world' } }).on 'manifest', (@manifest) => done()
+      Then -> @manifest.should.eql
+        foo: 'foo'
+        bar: 'bar'
+        blah: 'json'
+        bazQuux: 'quux'
+        hello: 'world'
+
+    describe 'with dir and options.name as function', ->
+      When (done) -> @fm.generateEvent("#{__dirname}/fixtures",
+        name: (file) -> file.name().split('').reverse().join('')
+      ).on 'manifest', (@manifest) => done()
+      Then -> @manifest.should.eql
+        oof: 'foo'
+        rab: 'bar'
+        halb: 'json'
+        xuuq: 'quux'
+
+    describe 'with dir and options.name as string', ->
+      context 'camelCase', ->
+        When (done) -> @fm.generateEvent("#{__dirname}/fixtures", { name: 'camelCase' }).on 'manifest', (@manifest) => done()
+        Then -> @manifest.should.eql
+          foo: 'foo'
+          bar: 'bar'
+          blah: 'json'
+          bazQuux: 'quux'
+
+      context 'dash', ->
+        When (done) -> @fm.generateEvent("#{__dirname}/fixtures", { name: 'dash' }).on 'manifest', (@manifest) => done()
+        Then -> @manifest.should.eql
+          foo: 'foo'
+          bar: 'bar'
+          blah: 'json'
+          'baz-quux': 'quux'
+
+      context 'pipe', ->
+        When (done) -> @fm.generateEvent("#{__dirname}/fixtures", { name: 'pipe' }).on 'manifest', (@manifest) => done()
+        Then -> @manifest.should.eql
+          foo: 'foo'
+          bar: 'bar'
+          blah: 'json'
+          'baz|quux': 'quux'
+
+      context 'class', ->
+        When (done) -> @fm.generateEvent( "#{__dirname}/fixtures", { name: 'class' }).on 'manifest', (@manifest) => done()
+        Then -> @manifest.should.eql
+          Foo: 'foo'
+          Bar: 'bar'
+          Blah: 'json'
+          BazQuux: 'quux'
+
+      context 'lower', ->
+        When (done) -> @fm.generateEvent("#{__dirname}/fixtures", { name: 'lower' }).on 'manifest', (@manifest) => done()
+        Then -> @manifest.should.eql
+          foo: 'foo'
+          bar: 'bar'
+          blah: 'json'
+          bazquux: 'quux'
+
+      context 'upper', ->
+        When (done) -> @fm.generateEvent("#{__dirname}/fixtures", { name: 'upper' }).on 'manifest', (@manifest) => done()
+        Then -> @manifest.should.eql
+          FOO: 'foo'
+          BAR: 'bar'
+          BLAH: 'json'
+          BAZQUUX: 'quux'
+
+      context 'underscore', ->
+        When (done) -> @fm.generateEvent("#{__dirname}/fixtures", { name: 'underscore' }).on 'manifest', (@manifest) => done()
+        Then -> @manifest.should.eql
+          foo: 'foo'
+          bar: 'bar'
+          blah: 'json'
+          baz_quux: 'quux'
+
+      context 'human', ->
+        When (done) -> @fm.generateEvent("#{__dirname}/fixtures", { name: 'human' }).on 'manifest', (@manifest) => done()
+        Then -> @manifest.should.eql
+          Foo: 'foo'
+          Bar: 'bar'
+          Blah: 'json'
+          'Baz quux': 'quux'
+
+    describe 'with dir and options.load as function', ->
+      When (done) -> @fm.generateEvent("#{__dirname}/fixtures",
+        load: (file, cb) -> cb(null, file.ext())
+      ).on 'manifest', (@manifest) => done()
+      Then -> @manifest.should.eql
+        foo: '.js'
+        bar: '.js'
+        blah: '.json'
+        bazQuux: '.js'
+
+    describe 'with dir and options.load as string', ->
+      context 'require', ->
+        When (done) -> @fm.generateEvent("#{__dirname}/fixtures", { load: 'require' }).on 'manifest', (@manifest) => done()
+        Then -> @manifest.should.eql
+          foo: 'foo'
+          bar: 'bar'
+          blah: 'json'
+          bazQuux: 'quux'
+
+      context 'readfile', ->
+        When (done) -> @fm.generateEvent("#{__dirname}/fixtures", { load: 'readFile' }).on 'manifest', (@manifest) => done()
+        Then -> @manifest.should.eql
+          foo: 'module.exports = \'foo\';\n'
+          bar: 'module.exports = \'bar\';\n'
+          blah: '"json"\n'
+          bazQuux: 'module.exports = \'quux\';\n'
+
+    describe 'with dir, options.memo, and options.reduce', ->
+      When (done) -> @fm.generateEvent("#{__dirname}/fixtures",
+        memo:
+          a: []
+          b: []
+        reduce: (manifest, file, cb) ->
+          manifest.b.push(file.name())
+          cb(null, manifest)
+      ).on 'manifest', (@manifest) => done()
+      And -> @manifest.b.sort()
+      Then -> @manifest.should.eql
+        a: []
+        b: ['bar', 'blah', 'foo', 'quux']
