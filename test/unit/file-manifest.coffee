@@ -184,19 +184,17 @@ describe 'file-manifest', ->
         @subject.reduce.should.be.calledWith {}, sinon.match.has('_file', '/foo/baz')
 
     context 'with a callback', ->
-      Given -> @cb = sinon.stub()
       Given -> @reduce = sinon.stub()
       Given -> @reduce.callsArgWith 2, null, {}
       Given -> @pedestrian.walk.withArgs('dir', '', sinon.match.func).callsArgWith 2, null, ['/foo/bar', '/foo/baz']
-      When -> @subject.run
+      When (done) -> @subject.run
         dir: 'dir'
         memo: {}
-        callback: @cb
+        callback: done
         reduce: @reduce
       Then ->
         @reduce.should.be.calledWith {}, sinon.match.has('_file', '/foo/bar'), sinon.match.func
         @reduce.should.be.calledWith {}, sinon.match.has('_file', '/foo/baz'), sinon.match.func
-        @cb.should.be.called
 
   describe '.reduce', ->
     afterEach -> @subject.load.restore()
