@@ -23,11 +23,12 @@
   },
   "dependencies": {
     "async": "^0.9.0",
-    "caller-id": "^0.1.0",
+    "defiled": "^1.0.1",
     "lodash": "^2.4.1",
     "pedestrian": "0.0.9",
-    "underscore.string": "^2.3.3",
-    "varity": "^1.0.2"
+    "promise": "^7.0.4",
+    "readutf": "^1.0.2",
+    "stack-trace": "0.0.9"
   },
   "devDependencies": {
     "coffee-script": "^1.8.0",

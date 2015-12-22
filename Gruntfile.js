@@ -12,7 +12,10 @@ module.exports = function(grunt) {
         es3: true,
         indent: 2,
         newcap: true,
-        quotmark: 'single'
+        quotmark: 'single',
+        globals: {
+          Promise: true
+        }
       },
       all: ['lib/*.js']
     },
