@@ -41,7 +41,7 @@
     "gulp-open": "^1.0.0",
     "gulp-sequence": "^0.4.3",
     "gulp-spawn-mocha": "^2.2.1",
-    "jshint": "^2.9.1-rc2",
+    "jshint": "2.8.0",
     "jshint-stylish": "^0.4.0",
     "mocha": "git://github.com/tandrewnichols/mocha.git#suppress-stack",
     "mocha-given": "git://github.com/tandrewnichols/mocha-given.git",
