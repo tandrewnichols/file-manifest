@@ -1,4 +1,5 @@
 sinon = require 'sinon'
+loaders = require '../../lib/loaders'
 
 describe 'file-manifest', ->
   Given -> @subject = require '../../lib/file-manifest'
@@ -234,9 +235,8 @@ describe 'file-manifest', ->
       Then -> @name.should.equal 'transformed camel'
 
   describe '.load', ->
-    Given -> @loaders = require '../../lib/loaders'
-    Given -> @loaders.banana = sinon.stub()
-    Given -> @loaders.banana.withArgs('absolute', 'cb').returns 'loaded'
+    Given -> loaders.banana = sinon.stub()
+    Given -> loaders.banana.withArgs('absolute', 'cb').returns 'loaded'
     afterEach -> @subject._getDefaultLoader.restore()
     Given -> sinon.stub @subject, '_getDefaultLoader'
     Given -> @abs = sinon.stub()
@@ -244,17 +244,13 @@ describe 'file-manifest', ->
 
     context 'loader exists', ->
       When -> @loader = @subject.load 'banana'
-      And -> @load = @loader
-        abs: @abs
-      , 'cb'
+      And -> @load = @loader abs: @abs, 'cb'
       Then -> @load.should.equal 'loaded'
 
     context 'loader does not exist', ->
       Given -> @subject._getDefaultLoader.withArgs({ abs: @abs }, 'cb').returns 'banana'
       When -> @loader = @subject.load 'apple'
-      And -> @load = @loader
-        abs: @abs
-      , 'cb'
+      And -> @load = @loader abs: @abs, 'cb'
       Then -> @load.should.equal 'loaded'
 
   describe '._getDefaultLoader', ->
