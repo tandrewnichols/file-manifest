@@ -22,7 +22,7 @@
     "test": "gulp"
   },
   "dependencies": {
-    "async": "^0.9.0",
+    "async": "^1.5.0",
     "defiled": "^1.0.1",
     "lodash": "^3.10.1",
     "pedestrian": "0.0.9",
