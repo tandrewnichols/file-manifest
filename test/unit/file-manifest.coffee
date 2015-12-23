@@ -1,5 +1,6 @@
 sinon = require 'sinon'
 loaders = require '../../lib/loaders'
+reducers = require '../../lib/reducers'
 
 describe 'file-manifest', ->
   Given -> @subject = require '../../lib/file-manifest'
@@ -8,10 +9,12 @@ describe 'file-manifest', ->
     afterEach -> @subject.run.restore()
     afterEach -> @subject.load.restore()
     afterEach -> @subject.name.restore()
+    afterEach -> @subject.reduce.restore()
     afterEach -> @subject.standardizePath.restore()
     Given -> sinon.stub @subject, 'run'
     Given -> sinon.stub(@subject, 'load').returns 'load'
     Given -> sinon.stub(@subject, 'name').returns 'name'
+    Given -> sinon.stub(@subject, 'reduce').returns 'reduce'
     Given -> sinon.stub(@subject, 'standardizePath').returnsArg 0
 
     context 'no options', ->
@@ -23,6 +26,7 @@ describe 'file-manifest', ->
         memo: {}
         load: 'load'
         name: 'name'
+        reduce: 'reduce'
 
     context 'callback but no options', ->
       Given -> @cb = sinon.stub()
@@ -34,6 +38,7 @@ describe 'file-manifest', ->
         memo: {}
         load: 'load'
         name: 'name'
+        reduce: 'reduce'
 
     context 'with match as array', ->
       When -> @subject.generate 'dir',
@@ -45,6 +50,7 @@ describe 'file-manifest', ->
         memo: {}
         load: 'load'
         name: 'name'
+        reduce: 'reduce'
 
     context 'with match as string', ->
       When -> @subject.generate 'dir',
@@ -56,6 +62,7 @@ describe 'file-manifest', ->
         memo: {}
         load: 'load'
         name: 'name'
+        reduce: 'reduce'
 
     context 'with memo', ->
       When -> @subject.generate 'dir',
@@ -67,6 +74,7 @@ describe 'file-manifest', ->
         memo: []
         load: 'load'
         name: 'name'
+        reduce: 'reduce'
 
     context 'with load as a function', ->
       Given -> @load = sinon.stub()
@@ -79,6 +87,7 @@ describe 'file-manifest', ->
         memo: {}
         load: @load
         name: 'name'
+        reduce: 'reduce'
 
     context 'with load as a string', ->
       Given -> @subject.load.withArgs('custom').returns 'custom'
@@ -91,6 +100,7 @@ describe 'file-manifest', ->
         memo: {}
         load: 'custom'
         name: 'name'
+        reduce: 'reduce'
 
     context 'with name as a function', ->
       Given -> @name = sinon.stub()
@@ -103,6 +113,7 @@ describe 'file-manifest', ->
         memo: {}
         load: 'load'
         name: @name
+        reduce: 'reduce'
 
     context 'with name as a string', ->
       Given -> @subject.name.withArgs('custom').returns 'custom'
@@ -115,6 +126,59 @@ describe 'file-manifest', ->
         memo: {}
         load: 'load'
         name: 'custom'
+        reduce: 'reduce'
+
+    context 'with reduce as a function', ->
+      Given -> @reduce = sinon.stub()
+      When -> @subject.generate 'dir',
+        reduce: @reduce
+      Then -> @subject.run.should.be.calledWith
+        dir: 'dir'
+        match: undefined
+        callback: undefined
+        memo: {}
+        load: 'load'
+        name: 'name'
+        reduce: @reduce
+
+    context 'with reduce as a string', ->
+      Given -> @subject.reduce.withArgs('custom').returns 'custom'
+      When -> @subject.generate 'dir',
+        reduce: 'custom'
+      Then -> @subject.run.should.be.calledWith
+        dir: 'dir'
+        match: undefined
+        callback: undefined
+        memo: {}
+        load: 'load'
+        name: 'name'
+        reduce: 'custom'
+
+    context 'with reduce as "list"', ->
+      Given -> @subject.reduce.withArgs('list').returns 'custom'
+      When -> @subject.generate 'dir',
+        reduce: 'list'
+      Then -> @subject.run.should.be.calledWith
+        dir: 'dir'
+        match: undefined
+        callback: undefined
+        memo: []
+        load: 'load'
+        name: 'name'
+        reduce: 'custom'
+      
+    context 'with reduce as "objectList"', ->
+      Given -> @subject.reduce.withArgs('objectList').returns 'custom'
+      When -> @subject.generate 'dir',
+        reduce: 'objectList'
+      Then -> @subject.run.should.be.calledWith
+        dir: 'dir'
+        match: undefined
+        callback: undefined
+        memo: []
+        load: 'load'
+        name: 'name'
+        reduce: 'custom'
 
   describe '.generateSync', ->
     afterEach -> @subject.generate.restore()
@@ -171,21 +235,20 @@ describe 'file-manifest', ->
     Given -> @pedestrian = require('pedestrian')
     afterEach -> @pedestrian.walk.restore()
     Given -> sinon.stub @pedestrian, 'walk'
-    afterEach -> @subject.reduce.restore()
-    Given -> sinon.stub @subject, 'reduce'
+    Given -> @reduce = sinon.stub()
 
     context 'without a callback', ->
-      Given -> @subject.reduce.returnsArg 0
+      Given -> @reduce.returnsArg 0
       Given -> @pedestrian.walk.withArgs('dir', '').returns ['/foo/bar', '/foo/baz']
       When -> @subject.run
         dir: 'dir'
         memo: {}
+        reduce: @reduce
       Then ->
-        @subject.reduce.should.be.calledWith {}, sinon.match.has('_file', '/foo/bar')
-        @subject.reduce.should.be.calledWith {}, sinon.match.has('_file', '/foo/baz')
+        @reduce.should.be.calledWith {}, sinon.match.has('_file', '/foo/bar')
+        @reduce.should.be.calledWith {}, sinon.match.has('_file', '/foo/baz')
 
     context 'with a callback', ->
-      Given -> @reduce = sinon.stub()
       Given -> @reduce.callsArgWith 2, null, {}
       Given -> @pedestrian.walk.withArgs('dir', '', sinon.match.func).callsArgWith 2, null, ['/foo/bar', '/foo/baz']
       When (done) -> @subject.run
@@ -198,21 +261,23 @@ describe 'file-manifest', ->
         @reduce.should.be.calledWith {}, sinon.match.has('_file', '/foo/baz'), sinon.match.func
 
   describe '.reduce', ->
-    afterEach -> @subject.load.restore()
-    Given -> sinon.stub @subject, 'load'
-    afterEach -> @subject.name.restore()
-    Given -> sinon.stub(@subject, 'name').returns 'banana'
-    
-    context 'without a callback', ->
-      Given -> @subject.load.withArgs('file').returns 'contents'
-      When -> @manifest = @subject.reduce({}, 'file')
-      Then -> @manifest.should.eql banana: 'contents'
+    Given -> reducers.banana = sinon.stub()
+    Given -> reducers.banana.withArgs('manifest', 'file', 'next').returns 'reduced'
+    afterEach -> @subject._getDefaultReducer.restore()
+    Given -> sinon.stub @subject, '_getDefaultReducer'
 
-    context 'with a callback', ->
-      Given -> @cb = sinon.stub()
-      Given -> @subject.load.withArgs('file', sinon.match.func).callsArgWith 1, null, 'contents'
-      When -> @subject.reduce {}, 'file', @cb
-      Then -> @cb.should.be.calledWith null, banana: 'contents'
+    context 'reducer does not exist', ->
+      Given -> @subject._getDefaultReducer.withArgs('memo').returns 'banana'
+      Given -> @context =
+        memo: 'memo'
+      When -> @reducer = @subject.reduce 'apple'
+      Then -> @reducer.call(@context, 'manifest', 'file', 'next').should.equal 'reduced'
+
+    context 'reducer exists', ->
+      Given -> @context =
+        memo: 'memo'
+      When -> @reducer = @subject.reduce 'banana'
+      Then -> @reducer.call(@context, 'manifest', 'file', 'next').should.equal 'reduced'
 
   describe '.name', ->
     context 'transformer exists', ->
@@ -252,6 +317,13 @@ describe 'file-manifest', ->
       When -> @loader = @subject.load 'apple'
       And -> @load = @loader abs: @abs, 'cb'
       Then -> @load.should.equal 'loaded'
+  
+  describe '._getDefaultReduce', ->
+    context 'memo is array', ->
+      Then -> @subject._getDefaultReducer([]).should.equal 'list'
+
+    context 'memo is not array', ->
+      Then -> @subject._getDefaultReducer({}).should.equal 'flat'
 
   describe '._getDefaultLoader', ->
     context 'file is js', ->
