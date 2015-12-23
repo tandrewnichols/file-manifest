@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "async": "^1.5.0",
-    "defiled": "^1.0.1",
+    "defiled": "^1.1.0",
     "lodash": "^3.10.1",
     "pedestrian": "0.0.9",
     "promise": "^7.0.4",
@@ -43,9 +43,8 @@
     "gulp-spawn-mocha": "^2.2.1",
     "jshint": "2.8.0",
     "jshint-stylish": "^0.4.0",
-    "mocha": "git://github.com/tandrewnichols/mocha.git#suppress-stack",
-    "mocha-given": "git://github.com/tandrewnichols/mocha-given.git",
-    "mocha-lcov-reporter": "0.0.1",
+    "mocha": "^2.3.4",
+    "mocha-given": "^0.1.3",
     "proxyquire": "^1.7.3",
     "rimraf": "^2.4.4",
     "should": "^8.0.2",
@@ -60,7 +59,8 @@
     "dir",
     "build",
     "manifest",
-    "all"
+    "all",
+    "require-dir"
   ],
   "main": "./lib/file-manifest",
   "engines": {
