@@ -177,6 +177,40 @@ describe 'integration', ->
         a: []
         b: ['bar', 'blah', 'foo', 'quux']
 
+    describe 'with options.reduce as a string', ->
+      context 'nested', ->
+        When -> @manifest = @fm.generate "./fixtures", reduce: 'nested'
+        Then -> @manifest.should.eql
+          foo: 'foo'
+          bar: 'bar'
+          baz:
+            quux: 'quux'
+          blah: 'json'
+
+      context 'list without memo', ->
+        When -> @manifest = @fm.generate './fixtures', reduce: 'list'
+        Then -> @manifest.should.eql ['bar', 'json', 'foo', 'quux']
+
+      context 'no list but with array memo', ->
+        When -> @manifest = @fm.generate './fixtures', memo: []
+        Then -> @manifest.should.eql ['bar', 'json', 'foo', 'quux']
+
+      context 'objectList', ->
+        When -> @manifest = @fm.generate './fixtures', reduce: 'objectList'
+        Then -> @manifest.should.eql [
+          name: 'bar',
+          contents: 'bar'
+        ,
+          name: 'blah'
+          contents: 'json'
+        ,
+          name: 'foo'
+          contents: 'foo'
+        ,
+          name: 'baz/quux'
+          contents: 'quux'
+        ]
+
   describe 'async', ->
     describe 'with a relative dir', ->
       When (done) -> @fm.generate "./fixtures", (err, @manifest) => done()
@@ -350,6 +384,40 @@ describe 'integration', ->
       Then -> @manifest.should.eql
         a: []
         b: ['bar', 'blah', 'foo', 'quux']
+
+    describe 'with options.reduce as a string', ->
+      context 'nested', ->
+        When (done) -> @manifest = @fm.generate "./fixtures", { reduce: 'nested' }, (err, @manifest) => done()
+        Then -> @manifest.should.eql
+          foo: 'foo'
+          bar: 'bar'
+          baz:
+            quux: 'quux'
+          blah: 'json'
+
+      context 'list without memo', ->
+        When (done) -> @manifest = @fm.generate './fixtures', { reduce: 'list' }, (err, @manifest) => done()
+        Then -> @manifest.should.eql ['bar', 'json', 'foo', 'quux']
+
+      context 'no list but with array memo', ->
+        When (done) -> @manifest = @fm.generate './fixtures', { memo: [] }, (err, @manifest) => done()
+        Then -> @manifest.should.eql ['bar', 'json', 'foo', 'quux']
+
+      context 'objectList', ->
+        When (done) -> @manifest = @fm.generate './fixtures', { reduce: 'objectList' }, (err, @manifest) => done()
+        Then -> @manifest.should.eql [
+          name: 'bar',
+          contents: 'bar'
+        ,
+          name: 'blah'
+          contents: 'json'
+        ,
+          name: 'foo'
+          contents: 'foo'
+        ,
+          name: 'baz/quux'
+          contents: 'quux'
+        ]
 
   describe 'promise', ->
     describe 'with a relative dir', ->
@@ -525,7 +593,41 @@ describe 'integration', ->
         a: []
         b: ['bar', 'blah', 'foo', 'quux']
 
-  describe 'promise', ->
+    describe 'with options.reduce as a string', ->
+      context 'nested', ->
+        When (done) -> @manifest = @fm.generatePromise("./fixtures", { reduce: 'nested' }).then (@manifest) => done()
+        Then -> @manifest.should.eql
+          foo: 'foo'
+          bar: 'bar'
+          baz:
+            quux: 'quux'
+          blah: 'json'
+
+      context 'list without memo', ->
+        When (done) -> @manifest = @fm.generatePromise('./fixtures', { reduce: 'list' }).then (@manifest) => done()
+        Then -> @manifest.should.eql ['bar', 'json', 'foo', 'quux']
+
+      context 'no list but with array memo', ->
+        When (done) -> @manifest = @fm.generatePromise('./fixtures', { memo: [] }).then (@manifest) => done()
+        Then -> @manifest.should.eql ['bar', 'json', 'foo', 'quux']
+
+      context 'objectList', ->
+        When (done) -> @manifest = @fm.generatePromise('./fixtures', { reduce: 'objectList' }).then (@manifest) => done()
+        Then -> @manifest.should.eql [
+          name: 'bar',
+          contents: 'bar'
+        ,
+          name: 'blah'
+          contents: 'json'
+        ,
+          name: 'foo'
+          contents: 'foo'
+        ,
+          name: 'baz/quux'
+          contents: 'quux'
+        ]
+
+  describe 'event', ->
     describe 'with a relative dir', ->
       When (done) -> @fm.generateEvent("./fixtures").on 'manifest', (@manifest) => done()
       Then -> @manifest.should.eql
@@ -698,3 +800,37 @@ describe 'integration', ->
       Then -> @manifest.should.eql
         a: []
         b: ['bar', 'blah', 'foo', 'quux']
+
+    describe 'with options.reduce as a string', ->
+      context 'nested', ->
+        When (done) -> @manifest = @fm.generateEvent("./fixtures", { reduce: 'nested' }).on 'manifest', (@manifest) => done()
+        Then -> @manifest.should.eql
+          foo: 'foo'
+          bar: 'bar'
+          baz:
+            quux: 'quux'
+          blah: 'json'
+
+      context 'list without memo', ->
+        When (done) -> @manifest = @fm.generateEvent('./fixtures', { reduce: 'list' }).on 'manifest', (@manifest) => done()
+        Then -> @manifest.should.eql ['bar', 'json', 'foo', 'quux']
+
+      context 'no list but with array memo', ->
+        When (done) -> @manifest = @fm.generateEvent('./fixtures', { memo: [] }).on 'manifest', (@manifest) => done()
+        Then -> @manifest.should.eql ['bar', 'json', 'foo', 'quux']
+
+      context 'objectList', ->
+        When (done) -> @manifest = @fm.generateEvent('./fixtures', { reduce: 'objectList' }).on 'manifest', (@manifest) => done()
+        Then -> @manifest.should.eql [
+          name: 'bar',
+          contents: 'bar'
+        ,
+          name: 'blah'
+          contents: 'json'
+        ,
+          name: 'foo'
+          contents: 'foo'
+        ,
+          name: 'baz/quux'
+          contents: 'quux'
+        ]
