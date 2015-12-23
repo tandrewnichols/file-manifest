@@ -11,7 +11,7 @@ describe 'integration', ->
         foo: 'foo'
         bar: 'bar'
         bazQuux: 'quux'
-        blah: 'json'
+        baBlah: 'json'
 
     describe 'with dir', ->
       When -> @manifest = @fm.generate "#{__dirname}/fixtures"
@@ -19,7 +19,7 @@ describe 'integration', ->
         foo: 'foo'
         bar: 'bar'
         bazQuux: 'quux'
-        blah: 'json'
+        baBlah: 'json'
 
     describe 'with dir and patterns as array', ->
       When -> @manifest = @fm.generate "#{__dirname}/fixtures", match: ['*.js']
@@ -31,7 +31,7 @@ describe 'integration', ->
       When -> @manifest = @fm.generate "#{__dirname}/fixtures", match: ['**/*.js', '*.json', '!foo*']
       Then -> @manifest.should.eql
         bar: 'bar'
-        blah: 'json'
+        baBlah: 'json'
         bazQuux: 'quux'
 
     describe 'with dir and patterns as string', ->
@@ -48,7 +48,7 @@ describe 'integration', ->
         foo: 'oof'
         bar: 'rab'
         quux: 'xuuq'
-        blah: 'nosj'
+        'ba-blah': 'nosj'
 
     describe 'with dir, patterns, and reducer', ->
       When -> @manifest = @fm.generate "#{__dirname}/fixtures", { match: ['*.js'], reduce: (manifest, file) ->
@@ -65,7 +65,7 @@ describe 'integration', ->
         foo: 'foo'
         bar: 'bar'
         bazQuux: 'quux'
-        blah: 'json'
+        baBlah: 'json'
         hello: 'world'
 
     describe 'with dir and options.name as function', ->
@@ -74,7 +74,7 @@ describe 'integration', ->
         oof: 'foo'
         rab: 'bar'
         xuuq: 'quux'
-        halb: 'json'
+        'halb-ab': 'json'
 
     describe 'with dir and options.name as string', ->
       context 'camelCase', ->
@@ -82,7 +82,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          baBlah: 'json'
           bazQuux: 'quux'
 
       context 'dash', ->
@@ -90,7 +90,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          'ba-blah': 'json'
           'baz-quux': 'quux'
 
       context 'pipe', ->
@@ -98,7 +98,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          'ba|blah': 'json'
           'baz|quux': 'quux'
 
       context 'class', ->
@@ -106,7 +106,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           Foo: 'foo'
           Bar: 'bar'
-          Blah: 'json'
+          BaBlah: 'json'
           BazQuux: 'quux'
 
       context 'lower', ->
@@ -114,7 +114,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          bablah: 'json'
           bazquux: 'quux'
 
       context 'upper', ->
@@ -122,7 +122,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           FOO: 'foo'
           BAR: 'bar'
-          BLAH: 'json'
+          BABLAH: 'json'
           BAZQUUX: 'quux'
 
       context 'underscore', ->
@@ -130,7 +130,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          ba_blah: 'json'
           baz_quux: 'quux'
 
       context 'human', ->
@@ -138,7 +138,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           Foo: 'foo'
           Bar: 'bar'
-          Blah: 'json'
+          'Ba blah': 'json'
           'Baz quux': 'quux'
 
     describe 'with dir and options.load as function', ->
@@ -146,7 +146,7 @@ describe 'integration', ->
       Then -> @manifest.should.eql
         foo: '.js'
         bar: '.js'
-        blah: '.json'
+        baBlah: '.json'
         bazQuux: '.js'
 
     describe 'with dir and options.load as string', ->
@@ -155,7 +155,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          baBlah: 'json'
           bazQuux: 'quux'
 
       context 'readfile', ->
@@ -163,7 +163,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'module.exports = \'foo\';\n'
           bar: 'module.exports = \'bar\';\n'
-          blah: '"json"\n'
+          baBlah: '"json"\n'
           bazQuux: 'module.exports = \'quux\';\n'
 
     describe 'with dir, options.memo, and reducer', ->
@@ -175,7 +175,7 @@ describe 'integration', ->
       And -> @manifest.b.sort()
       Then -> @manifest.should.eql
         a: []
-        b: ['bar', 'blah', 'foo', 'quux']
+        b: ['ba-blah', 'bar', 'foo', 'quux']
 
     describe 'with options.reduce as a string', ->
       context 'nested', ->
@@ -185,24 +185,24 @@ describe 'integration', ->
           bar: 'bar'
           baz:
             quux: 'quux'
-          blah: 'json'
+          baBlah: 'json'
 
       context 'list without memo', ->
         When -> @manifest = @fm.generate './fixtures', reduce: 'list'
-        Then -> @manifest.should.eql ['bar', 'json', 'foo', 'quux']
+        Then -> @manifest.should.eql ['json', 'bar', 'foo', 'quux']
 
       context 'no list but with array memo', ->
         When -> @manifest = @fm.generate './fixtures', memo: []
-        Then -> @manifest.should.eql ['bar', 'json', 'foo', 'quux']
+        Then -> @manifest.should.eql ['json', 'bar', 'foo', 'quux']
 
       context 'objectList', ->
         When -> @manifest = @fm.generate './fixtures', reduce: 'objectList'
         Then -> @manifest.should.eql [
+          name: 'ba-blah'
+          contents: 'json'
+        ,
           name: 'bar',
           contents: 'bar'
-        ,
-          name: 'blah'
-          contents: 'json'
         ,
           name: 'foo'
           contents: 'foo'
@@ -217,7 +217,7 @@ describe 'integration', ->
       Then -> @manifest.should.eql
         foo: 'foo'
         bar: 'bar'
-        blah: 'json'
+        baBlah: 'json'
         bazQuux: 'quux'
 
     describe 'with dir', ->
@@ -225,7 +225,7 @@ describe 'integration', ->
       Then -> @manifest.should.eql
         foo: 'foo'
         bar: 'bar'
-        blah: 'json'
+        baBlah: 'json'
         bazQuux: 'quux'
 
     describe 'with dir and options.match', ->
@@ -243,7 +243,7 @@ describe 'integration', ->
         foo: 'oof'
         bar: 'rab'
         quux: 'xuuq'
-        blah: 'nosj'
+        'ba-blah': 'nosj'
 
     describe 'with dir, options.match, and options.reduce', ->
       When (done) -> @fm.generate "#{__dirname}/fixtures", { match: ['*.js'], reduce: (manifest, file, cb) ->
@@ -265,7 +265,7 @@ describe 'integration', ->
       Then -> @manifest.should.eql
         foo: 'foo'
         bar: 'bar'
-        blah: 'json'
+        baBlah: 'json'
         bazQuux: 'quux'
         hello: 'world'
 
@@ -276,7 +276,7 @@ describe 'integration', ->
       Then -> @manifest.should.eql
         oof: 'foo'
         rab: 'bar'
-        halb: 'json'
+        'halb-ab': 'json'
         xuuq: 'quux'
 
     describe 'with dir and options.name as string', ->
@@ -285,7 +285,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          baBlah: 'json'
           bazQuux: 'quux'
 
       context 'dash', ->
@@ -293,7 +293,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          'ba-blah': 'json'
           'baz-quux': 'quux'
 
       context 'pipe', ->
@@ -301,7 +301,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          'ba|blah': 'json'
           'baz|quux': 'quux'
 
       context 'class', ->
@@ -309,7 +309,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           Foo: 'foo'
           Bar: 'bar'
-          Blah: 'json'
+          BaBlah: 'json'
           BazQuux: 'quux'
 
       context 'lower', ->
@@ -317,7 +317,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          bablah: 'json'
           bazquux: 'quux'
 
       context 'upper', ->
@@ -325,7 +325,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           FOO: 'foo'
           BAR: 'bar'
-          BLAH: 'json'
+          BABLAH: 'json'
           BAZQUUX: 'quux'
 
       context 'underscore', ->
@@ -333,7 +333,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          ba_blah: 'json'
           baz_quux: 'quux'
 
       context 'human', ->
@@ -341,7 +341,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           Foo: 'foo'
           Bar: 'bar'
-          Blah: 'json'
+          'Ba blah': 'json'
           'Baz quux': 'quux'
 
     describe 'with dir and options.load as function', ->
@@ -351,7 +351,7 @@ describe 'integration', ->
       Then -> @manifest.should.eql
         foo: '.js'
         bar: '.js'
-        blah: '.json'
+        baBlah: '.json'
         bazQuux: '.js'
 
     describe 'with dir and options.load as string', ->
@@ -360,7 +360,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          baBlah: 'json'
           bazQuux: 'quux'
 
       context 'readfile', ->
@@ -368,7 +368,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'module.exports = \'foo\';\n'
           bar: 'module.exports = \'bar\';\n'
-          blah: '"json"\n'
+          baBlah: '"json"\n'
           bazQuux: 'module.exports = \'quux\';\n'
 
     describe 'with dir, options.memo, and options.reduce', ->
@@ -383,7 +383,7 @@ describe 'integration', ->
       And -> @manifest.b.sort()
       Then -> @manifest.should.eql
         a: []
-        b: ['bar', 'blah', 'foo', 'quux']
+        b: ['ba-blah', 'bar', 'foo', 'quux']
 
     describe 'with options.reduce as a string', ->
       context 'nested', ->
@@ -393,24 +393,24 @@ describe 'integration', ->
           bar: 'bar'
           baz:
             quux: 'quux'
-          blah: 'json'
+          baBlah: 'json'
 
       context 'list without memo', ->
         When (done) -> @manifest = @fm.generate './fixtures', { reduce: 'list' }, (err, @manifest) => done()
-        Then -> @manifest.should.eql ['bar', 'json', 'foo', 'quux']
+        Then -> @manifest.should.eql ['json', 'bar', 'foo', 'quux']
 
       context 'no list but with array memo', ->
         When (done) -> @manifest = @fm.generate './fixtures', { memo: [] }, (err, @manifest) => done()
-        Then -> @manifest.should.eql ['bar', 'json', 'foo', 'quux']
+        Then -> @manifest.should.eql ['json', 'bar', 'foo', 'quux']
 
       context 'objectList', ->
         When (done) -> @manifest = @fm.generate './fixtures', { reduce: 'objectList' }, (err, @manifest) => done()
         Then -> @manifest.should.eql [
+          name: 'ba-blah'
+          contents: 'json'
+        ,
           name: 'bar',
           contents: 'bar'
-        ,
-          name: 'blah'
-          contents: 'json'
         ,
           name: 'foo'
           contents: 'foo'
@@ -425,7 +425,7 @@ describe 'integration', ->
       Then -> @manifest.should.eql
         foo: 'foo'
         bar: 'bar'
-        blah: 'json'
+        baBlah: 'json'
         bazQuux: 'quux'
 
     describe 'with dir', ->
@@ -433,7 +433,7 @@ describe 'integration', ->
       Then -> @manifest.should.eql
         foo: 'foo'
         bar: 'bar'
-        blah: 'json'
+        baBlah: 'json'
         bazQuux: 'quux'
 
     describe 'with dir and options.match', ->
@@ -451,7 +451,7 @@ describe 'integration', ->
         foo: 'oof'
         bar: 'rab'
         quux: 'xuuq'
-        blah: 'nosj'
+        'ba-blah': 'nosj'
 
     describe 'with dir, options.match, and options.reduce', ->
       When (done) -> @fm.generatePromise("#{__dirname}/fixtures", { match: ['*.js'], reduce: (manifest, file, cb) ->
@@ -473,7 +473,7 @@ describe 'integration', ->
       Then -> @manifest.should.eql
         foo: 'foo'
         bar: 'bar'
-        blah: 'json'
+        baBlah: 'json'
         bazQuux: 'quux'
         hello: 'world'
 
@@ -484,7 +484,7 @@ describe 'integration', ->
       Then -> @manifest.should.eql
         oof: 'foo'
         rab: 'bar'
-        halb: 'json'
+        'halb-ab': 'json'
         xuuq: 'quux'
 
     describe 'with dir and options.name as string', ->
@@ -493,7 +493,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          baBlah: 'json'
           bazQuux: 'quux'
 
       context 'dash', ->
@@ -501,7 +501,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          'ba-blah': 'json'
           'baz-quux': 'quux'
 
       context 'pipe', ->
@@ -509,7 +509,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          'ba|blah': 'json'
           'baz|quux': 'quux'
 
       context 'class', ->
@@ -517,7 +517,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           Foo: 'foo'
           Bar: 'bar'
-          Blah: 'json'
+          BaBlah: 'json'
           BazQuux: 'quux'
 
       context 'lower', ->
@@ -525,7 +525,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          bablah: 'json'
           bazquux: 'quux'
 
       context 'upper', ->
@@ -533,7 +533,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           FOO: 'foo'
           BAR: 'bar'
-          BLAH: 'json'
+          BABLAH: 'json'
           BAZQUUX: 'quux'
 
       context 'underscore', ->
@@ -541,7 +541,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          ba_blah: 'json'
           baz_quux: 'quux'
 
       context 'human', ->
@@ -549,7 +549,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           Foo: 'foo'
           Bar: 'bar'
-          Blah: 'json'
+          'Ba blah': 'json'
           'Baz quux': 'quux'
 
     describe 'with dir and options.load as function', ->
@@ -559,7 +559,7 @@ describe 'integration', ->
       Then -> @manifest.should.eql
         foo: '.js'
         bar: '.js'
-        blah: '.json'
+        baBlah: '.json'
         bazQuux: '.js'
 
     describe 'with dir and options.load as string', ->
@@ -568,7 +568,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          baBlah: 'json'
           bazQuux: 'quux'
 
       context 'readfile', ->
@@ -576,7 +576,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'module.exports = \'foo\';\n'
           bar: 'module.exports = \'bar\';\n'
-          blah: '"json"\n'
+          baBlah: '"json"\n'
           bazQuux: 'module.exports = \'quux\';\n'
 
     describe 'with dir, options.memo, and options.reduce', ->
@@ -591,7 +591,7 @@ describe 'integration', ->
       And -> @manifest.b.sort()
       Then -> @manifest.should.eql
         a: []
-        b: ['bar', 'blah', 'foo', 'quux']
+        b: ['ba-blah', 'bar', 'foo', 'quux']
 
     describe 'with options.reduce as a string', ->
       context 'nested', ->
@@ -601,24 +601,24 @@ describe 'integration', ->
           bar: 'bar'
           baz:
             quux: 'quux'
-          blah: 'json'
+          baBlah: 'json'
 
       context 'list without memo', ->
         When (done) -> @manifest = @fm.generatePromise('./fixtures', { reduce: 'list' }).then (@manifest) => done()
-        Then -> @manifest.should.eql ['bar', 'json', 'foo', 'quux']
+        Then -> @manifest.should.eql ['json', 'bar', 'foo', 'quux']
 
       context 'no list but with array memo', ->
         When (done) -> @manifest = @fm.generatePromise('./fixtures', { memo: [] }).then (@manifest) => done()
-        Then -> @manifest.should.eql ['bar', 'json', 'foo', 'quux']
+        Then -> @manifest.should.eql ['json', 'bar', 'foo', 'quux']
 
       context 'objectList', ->
         When (done) -> @manifest = @fm.generatePromise('./fixtures', { reduce: 'objectList' }).then (@manifest) => done()
         Then -> @manifest.should.eql [
+          name: 'ba-blah'
+          contents: 'json'
+        ,
           name: 'bar',
           contents: 'bar'
-        ,
-          name: 'blah'
-          contents: 'json'
         ,
           name: 'foo'
           contents: 'foo'
@@ -633,7 +633,7 @@ describe 'integration', ->
       Then -> @manifest.should.eql
         foo: 'foo'
         bar: 'bar'
-        blah: 'json'
+        baBlah: 'json'
         bazQuux: 'quux'
 
     describe 'with dir', ->
@@ -641,7 +641,7 @@ describe 'integration', ->
       Then -> @manifest.should.eql
         foo: 'foo'
         bar: 'bar'
-        blah: 'json'
+        baBlah: 'json'
         bazQuux: 'quux'
 
     describe 'with dir and options.match', ->
@@ -659,7 +659,7 @@ describe 'integration', ->
         foo: 'oof'
         bar: 'rab'
         quux: 'xuuq'
-        blah: 'nosj'
+        'ba-blah': 'nosj'
 
     describe 'with dir, options.match, and options.reduce', ->
       When (done) -> @fm.generateEvent("#{__dirname}/fixtures", { match: ['*.js'], reduce: (manifest, file, cb) ->
@@ -681,7 +681,7 @@ describe 'integration', ->
       Then -> @manifest.should.eql
         foo: 'foo'
         bar: 'bar'
-        blah: 'json'
+        baBlah: 'json'
         bazQuux: 'quux'
         hello: 'world'
 
@@ -692,7 +692,7 @@ describe 'integration', ->
       Then -> @manifest.should.eql
         oof: 'foo'
         rab: 'bar'
-        halb: 'json'
+        'halb-ab': 'json'
         xuuq: 'quux'
 
     describe 'with dir and options.name as string', ->
@@ -701,7 +701,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          baBlah: 'json'
           bazQuux: 'quux'
 
       context 'dash', ->
@@ -709,7 +709,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          'ba-blah': 'json'
           'baz-quux': 'quux'
 
       context 'pipe', ->
@@ -717,7 +717,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          'ba|blah': 'json'
           'baz|quux': 'quux'
 
       context 'class', ->
@@ -725,7 +725,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           Foo: 'foo'
           Bar: 'bar'
-          Blah: 'json'
+          BaBlah: 'json'
           BazQuux: 'quux'
 
       context 'lower', ->
@@ -733,7 +733,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          bablah: 'json'
           bazquux: 'quux'
 
       context 'upper', ->
@@ -741,7 +741,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           FOO: 'foo'
           BAR: 'bar'
-          BLAH: 'json'
+          BABLAH: 'json'
           BAZQUUX: 'quux'
 
       context 'underscore', ->
@@ -749,7 +749,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          ba_blah: 'json'
           baz_quux: 'quux'
 
       context 'human', ->
@@ -757,7 +757,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           Foo: 'foo'
           Bar: 'bar'
-          Blah: 'json'
+          'Ba blah': 'json'
           'Baz quux': 'quux'
 
     describe 'with dir and options.load as function', ->
@@ -767,7 +767,7 @@ describe 'integration', ->
       Then -> @manifest.should.eql
         foo: '.js'
         bar: '.js'
-        blah: '.json'
+        baBlah: '.json'
         bazQuux: '.js'
 
     describe 'with dir and options.load as string', ->
@@ -776,7 +776,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'foo'
           bar: 'bar'
-          blah: 'json'
+          baBlah: 'json'
           bazQuux: 'quux'
 
       context 'readfile', ->
@@ -784,7 +784,7 @@ describe 'integration', ->
         Then -> @manifest.should.eql
           foo: 'module.exports = \'foo\';\n'
           bar: 'module.exports = \'bar\';\n'
-          blah: '"json"\n'
+          baBlah: '"json"\n'
           bazQuux: 'module.exports = \'quux\';\n'
 
     describe 'with dir, options.memo, and options.reduce', ->
@@ -799,7 +799,7 @@ describe 'integration', ->
       And -> @manifest.b.sort()
       Then -> @manifest.should.eql
         a: []
-        b: ['bar', 'blah', 'foo', 'quux']
+        b: ['ba-blah', 'bar', 'foo', 'quux']
 
     describe 'with options.reduce as a string', ->
       context 'nested', ->
@@ -809,24 +809,24 @@ describe 'integration', ->
           bar: 'bar'
           baz:
             quux: 'quux'
-          blah: 'json'
+          baBlah: 'json'
 
       context 'list without memo', ->
         When (done) -> @manifest = @fm.generateEvent('./fixtures', { reduce: 'list' }).on 'manifest', (@manifest) => done()
-        Then -> @manifest.should.eql ['bar', 'json', 'foo', 'quux']
+        Then -> @manifest.should.eql ['json', 'bar', 'foo', 'quux']
 
       context 'no list but with array memo', ->
         When (done) -> @manifest = @fm.generateEvent('./fixtures', { memo: [] }).on 'manifest', (@manifest) => done()
-        Then -> @manifest.should.eql ['bar', 'json', 'foo', 'quux']
+        Then -> @manifest.should.eql ['json', 'bar', 'foo', 'quux']
 
       context 'objectList', ->
         When (done) -> @manifest = @fm.generateEvent('./fixtures', { reduce: 'objectList' }).on 'manifest', (@manifest) => done()
         Then -> @manifest.should.eql [
+          name: 'ba-blah'
+          contents: 'json'
+        ,
           name: 'bar',
           contents: 'bar'
-        ,
-          name: 'blah'
-          contents: 'json'
         ,
           name: 'foo'
           contents: 'foo'

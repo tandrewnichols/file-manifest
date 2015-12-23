@@ -1,9 +1,15 @@
 sinon = require 'sinon'
-loaders = require '../../lib/loaders'
-reducers = require '../../lib/reducers'
 
 describe 'file-manifest', ->
-  Given -> @subject = require '../../lib/file-manifest'
+  Given -> @loaders =
+    banana: sinon.stub()
+  Given -> @loaders.banana.withArgs('absolute', 'cb').returns 'loaded'
+  Given -> @reducers =
+    banana: sinon.stub()
+  Given -> @reducers.banana.withArgs('manifest', 'file', 'next').returns 'reduced'
+  Given -> @subject = require('proxyquire').noCallThru() '../../lib/file-manifest',
+    './loaders': @loaders
+    './reducers': @reducers
 
   describe '.generate', ->
     afterEach -> @subject.run.restore()
@@ -261,8 +267,6 @@ describe 'file-manifest', ->
         @reduce.should.be.calledWith {}, sinon.match.has('_file', '/foo/baz'), sinon.match.func
 
   describe '.reduce', ->
-    Given -> reducers.banana = sinon.stub()
-    Given -> reducers.banana.withArgs('manifest', 'file', 'next').returns 'reduced'
     afterEach -> @subject._getDefaultReducer.restore()
     Given -> sinon.stub @subject, '_getDefaultReducer'
 
@@ -300,8 +304,6 @@ describe 'file-manifest', ->
       Then -> @name.should.equal 'transformed camel'
 
   describe '.load', ->
-    Given -> loaders.banana = sinon.stub()
-    Given -> loaders.banana.withArgs('absolute', 'cb').returns 'loaded'
     afterEach -> @subject._getDefaultLoader.restore()
     Given -> sinon.stub @subject, '_getDefaultLoader'
     Given -> @abs = sinon.stub()
