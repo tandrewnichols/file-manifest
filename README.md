@@ -1,7 +1,5 @@
 [![Build Status](https://travis-ci.org/mantacode/file-manifest.png)](https://travis-ci.org/mantacode/file-manifest) [![downloads](http://img.shields.io/npm/dm/file-manifest.svg)](https://npmjs.org/package/file-manifest) [![npm](http://img.shields.io/npm/v/file-manifest.svg)](https://npmjs.org/package/file-manifest) [![Code Climate](https://codeclimate.com/github/mantacode/file-manifest/badges/gpa.svg)](https://codeclimate.com/github/mantacode/file-manifest) [![Test Coverage](https://codeclimate.com/github/mantacode/file-manifest/badges/coverage.svg)](https://codeclimate.com/github/mantacode/file-manifest) [![dependencies](https://david-dm.org/mantacode/file-manifest.png)](https://david-dm.org/mantacode/file-manifest)
 
-[![NPM info](https://nodei.co/npm/file-manifest.png?downloads=true)](https://nodei.co/npm/file-manifest.png?downloads=true)
-
 # File-Manifest
 
 Require all the files in a directory into a single object

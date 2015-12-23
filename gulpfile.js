@@ -9,6 +9,6 @@ require('./gulp/lint');
 require('./gulp/open');
 require('./gulp/unit');
 require('./gulp/watch');
-gulp.task('travis', sequence(['lint', 'cover', 'int'], 'codeclimate'));
-gulp.task('test', ['cover', 'int']);
+gulp.task('travis', sequence(['instrument'], ['lint', 'cover', 'int'], 'codeclimate'));
+gulp.task('test', sequence(['instrument'], 'cover', 'int'));
 gulp.task('default', ['lint', 'test']);
