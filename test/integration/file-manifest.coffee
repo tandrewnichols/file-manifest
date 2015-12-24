@@ -13,6 +13,14 @@ describe 'integration', ->
         bazQuux: 'quux'
         baBlah: 'json'
 
+    describe 'with relative dir with no dot', ->
+      When -> @manifest = @fm.generate "fixtures"
+      Then -> @manifest.should.eql
+        foo: 'foo'
+        bar: 'bar'
+        bazQuux: 'quux'
+        baBlah: 'json'
+
     describe 'with dir', ->
       When -> @manifest = @fm.generate "#{__dirname}/fixtures"
       Then -> @manifest.should.eql
@@ -214,6 +222,14 @@ describe 'integration', ->
   describe 'async', ->
     describe 'with a relative dir', ->
       When (done) -> @fm.generate "./fixtures", (err, @manifest) => done()
+      Then -> @manifest.should.eql
+        foo: 'foo'
+        bar: 'bar'
+        baBlah: 'json'
+        bazQuux: 'quux'
+
+    describe 'with a relative dir with no dot', ->
+      When (done) -> @fm.generate "fixtures", (err, @manifest) => done()
       Then -> @manifest.should.eql
         foo: 'foo'
         bar: 'bar'
@@ -428,6 +444,14 @@ describe 'integration', ->
         baBlah: 'json'
         bazQuux: 'quux'
 
+    describe 'with a relative dir with no dot', ->
+      When (done) -> @fm.generatePromise("fixtures").then (@manifest) => done()
+      Then -> @manifest.should.eql
+        foo: 'foo'
+        bar: 'bar'
+        baBlah: 'json'
+        bazQuux: 'quux'
+
     describe 'with dir', ->
       When (done) -> @fm.generatePromise("#{__dirname}/fixtures").then (@manifest) => done()
       Then -> @manifest.should.eql
@@ -630,6 +654,14 @@ describe 'integration', ->
   describe 'event', ->
     describe 'with a relative dir', ->
       When (done) -> @fm.generateEvent("./fixtures").on 'manifest', (@manifest) => done()
+      Then -> @manifest.should.eql
+        foo: 'foo'
+        bar: 'bar'
+        baBlah: 'json'
+        bazQuux: 'quux'
+
+    describe 'with a relative dir with no dot', ->
+      When (done) -> @fm.generateEvent("fixtures").on 'manifest', (@manifest) => done()
       Then -> @manifest.should.eql
         foo: 'foo'
         bar: 'bar'
