@@ -315,7 +315,7 @@ describe 'file-manifest', ->
       Then -> @load.should.equal 'loaded'
 
     context 'loader does not exist', ->
-      Given -> @subject._getDefaultLoader.withArgs({ abs: @abs }, 'cb').returns 'banana'
+      Given -> @subject._getDefaultLoader.withArgs({ abs: @abs }).returns 'banana'
       When -> @loader = @subject.load 'apple'
       And -> @load = @loader abs: @abs, 'cb'
       Then -> @load.should.equal 'loaded'
@@ -343,11 +343,5 @@ describe 'file-manifest', ->
     context 'file is neither js nor json', ->
       Given -> @file =
         ext: sinon.stub().returns '.txt'
-
-      context 'and there is a callback', ->
-        When -> @loader = @subject._getDefaultLoader @file, 'cb'
-        Then -> @loader.should.equal 'readFile'
-
-      context 'and there is no callback', ->
-        When -> @loader = @subject._getDefaultLoader @file
-        Then -> @loader.should.equal 'readFileSync'
+      When -> @loader = @subject._getDefaultLoader @file
+      Then -> @loader.should.equal 'readFile'
