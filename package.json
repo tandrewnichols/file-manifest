@@ -3,21 +3,15 @@
   "description": "Require all the files in a directory into a single object",
   "version": "2.0.0",
   "author": {
-    "name": "mantacode",
-    "email": "code@manta.com",
-    "url": "www.manta.com"
+    "name": "Andrew Nichols",
+    "email": "tandrewnichols@gmail.com",
+    "url": "www.tandrewnichols.me"
   },
-  "contributors": [
-    {
-      "name": "Andrew Nichols",
-      "email": "anichols@manta.com"
-    }
-  ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/mantacode/file-manifest.git"
+    "url": "git://github.com/tandrewnichols/file-manifest.git"
   },
-  "homepage": "https://github.com/mantacode/file-manifest",
+  "homepage": "https://github.com/tandrewnichols/file-manifest",
   "scripts": {
     "test": "gulp"
   },

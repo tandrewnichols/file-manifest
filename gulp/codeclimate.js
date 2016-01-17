@@ -5,7 +5,7 @@ gulp.task('codeclimate', function() {
   if (process.version.indexOf('v4') > -1) {
     gulp.src('coverage/lcov.info', { read: false })
       .pipe(codeclimate({
-        token: '8abfd8828271583b9597891d0dfddb3cb9ca38cc1b0742fce4fe9af0c292ebc4'
+        token: '99f4948db226295b48a68e6af252825ec12bae5ad6f59ff4b224f345b7c10772'
       }));
   }
 });
