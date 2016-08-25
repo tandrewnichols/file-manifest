@@ -184,7 +184,7 @@ var routes = fm.generate('routes', { name: require('randomstring').generate });
 Get all markdowns files in the current directory (as strings using "readFile")
 
 ```js
-var routes = fm.generate('./', { load: "readFile" }); // not necessary, since this is the default for none .js/.json files
+var routes = fm.generate('./', { load: "readFile" }); // not necessary, since this is the default for non .js/.json files
 ```
 
 Get all markdown file in the current directory as markdown:
