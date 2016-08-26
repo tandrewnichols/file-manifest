@@ -266,6 +266,17 @@ describe 'file-manifest', ->
         @reduce.should.be.calledWith {}, sinon.match.has('_file', '/foo/bar'), sinon.match.func
         @reduce.should.be.calledWith {}, sinon.match.has('_file', '/foo/baz'), sinon.match.func
 
+    context 'with an error', ->
+      Given -> @pedestrian.walk.withArgs('dir', '', sinon.match.func).callsArgWith 2, 'error', null
+      When (done) -> @subject.run
+        dir: 'dir'
+        memo: {}
+        callback: (@err) => done()
+        reduce: @reduce
+      Then ->
+        @err.should.equal 'error'
+        @reduce.called.should.be.false()
+
   describe '.reduce', ->
     afterEach -> @subject._getDefaultReducer.restore()
     Given -> sinon.stub @subject, '_getDefaultReducer'
