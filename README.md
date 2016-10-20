@@ -181,7 +181,7 @@ var routes = fm.generate('routes', { name: require('uuid').v4 });
 var routes = fm.generate('routes', { name: require('randomstring').generate });
 ```
 
-Get all markdowns files in the current directory (as strings using "readFile")
+Get all markdown files in the current directory (as strings using "readFile")
 
 ```js
 var routes = fm.generate('./', { load: "readFile" }); // not necessary, since this is the default for non .js/.json files
