@@ -184,13 +184,13 @@ var routes = fm.generate('routes', { name: require('randomstring').generate });
 Get all markdown files in the current directory (as strings using "readFile")
 
 ```js
-var routes = fm.generate('./', { load: "readFile" }); // not necessary, since this is the default for non .js/.json files
+var routes = fm.generate('./', { match: '**/*.md', load: "readFile" }); // not necessary, since this is the default for non .js/.json files
 ```
 
 Get all markdown files in the current directory as markdown:
 
 ```js
-var routes = fm.generate('./', { load: require('marky-mark').parseFileSync });
+var routes = fm.generate('./', { match: '**/*.md', load: require('marky-mark').parseFileSync });
 ```
 
 Get a list of routes:
